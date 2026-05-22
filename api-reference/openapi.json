@@ -1,0 +1,1429 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/routes": {
+      "get": {
+        "description": "Returns the off-ramp corridors available to the authenticated user, filtered to their eligible markets.",
+        "operationId": "RetailOfframpController_getRoutes",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List available retail offramp routes",
+        "tags": [
+          "Offramp"
+        ],
+        "x-eqx-audience": [
+          "integrator"
+        ]
+      }
+    },
+    "/api/transactions": {
+      "get": {
+        "description": "Returns a paginated list of payout transactions. Supports offset pagination via `page` and `per_page` query parameters.",
+        "operationId": "RetailOfframpController_listTransactions",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List retail payout transactions for the authenticated user",
+        "tags": [
+          "Offramp"
+        ],
+        "x-eqx-audience": [
+          "integrator"
+        ]
+      }
+    },
+    "/api/quotes": {
+      "post": {
+        "description": "Generates a locked off-ramp quote for the specified corridor and amount. Quotes expire after a short window (typically 60–120 seconds). Use the returned `quote_id` to commit the transaction.",
+        "operationId": "RetailOfframpController_createQuote",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateQuoteDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a retail offramp quote",
+        "tags": [
+          "Offramp"
+        ],
+        "x-eqx-audience": [
+          "integrator"
+        ]
+      }
+    },
+    "/api/transactions/commit": {
+      "post": {
+        "description": "Converts a locked quote into a live payout transaction. Requires an `Idempotency-Key` header to prevent duplicate submissions. The beneficiary receives the fiat amount once the payout provider confirms settlement.",
+        "operationId": "RetailOfframpController_commitTransaction",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CommitRetailPayoutDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Commit a retail payout transaction from an accepted quote",
+        "tags": [
+          "Offramp"
+        ],
+        "x-eqx-audience": [
+          "integrator"
+        ]
+      }
+    },
+    "/api/transactions/{transactionId}": {
+      "get": {
+        "description": "Returns the full status and metadata for a single payout transaction, including payout provider reference and settlement timestamps.",
+        "operationId": "RetailOfframpController_getTransactionDetail",
+        "parameters": [
+          {
+            "name": "transactionId",
+            "required": true,
+            "in": "path",
+            "description": "Transaction ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get retail payout transaction detail",
+        "tags": [
+          "Offramp"
+        ],
+        "x-eqx-audience": [
+          "integrator"
+        ]
+      }
+    },
+    "/api/partner/account": {
+      "get": {
+        "description": "Returns the partner account record for the authenticated user's active workspace, including account status and configuration.",
+        "operationId": "PartnerController_getPartnerAccount",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get the authenticated partner account",
+        "tags": [
+          "Partners"
+        ],
+        "x-eqx-audience": [
+          "integrator"
+        ]
+      }
+    },
+    "/api/partner/memberships": {
+      "get": {
+        "description": "Returns all team members currently active on the authenticated user's partner account.",
+        "operationId": "PartnerController_listMemberships",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List memberships for the authenticated user",
+        "tags": [
+          "Partners"
+        ],
+        "x-eqx-audience": [
+          "integrator"
+        ]
+      },
+      "post": {
+        "description": "Adds an existing EQX user to the partner account team. The user must already hold an EQX account.",
+        "operationId": "PartnerController_createMembership",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMembershipDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Add a member to the partner account",
+        "tags": [
+          "Partners"
+        ],
+        "x-eqx-audience": [
+          "integrator"
+        ]
+      }
+    },
+    "/api/partner/memberships/{membershipId}": {
+      "patch": {
+        "description": "Changes the role of an existing team member. Use this to promote or restrict access without removing and re-adding the member.",
+        "operationId": "PartnerController_updateMembership",
+        "parameters": [
+          {
+            "name": "membershipId",
+            "required": true,
+            "in": "path",
+            "description": "Membership record ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMembershipDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update the role of a partner account member",
+        "tags": [
+          "Partners"
+        ],
+        "x-eqx-audience": [
+          "integrator"
+        ]
+      },
+      "delete": {
+        "description": "Removes a team member from the partner account. Access is revoked immediately.",
+        "operationId": "PartnerController_removeMembership",
+        "parameters": [
+          {
+            "name": "membershipId",
+            "required": true,
+            "in": "path",
+            "description": "Membership record ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Remove a member from the partner account",
+        "tags": [
+          "Partners"
+        ],
+        "x-eqx-audience": [
+          "integrator"
+        ]
+      }
+    },
+    "/api/partner/invitations": {
+      "get": {
+        "description": "Returns all open invitations sent from the authenticated partner account that have not yet been accepted or cancelled.",
+        "operationId": "PartnerController_listPendingInvitations",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List pending invitations for the partner account",
+        "tags": [
+          "Partners"
+        ],
+        "x-eqx-audience": [
+          "integrator"
+        ]
+      },
+      "post": {
+        "description": "Sends an email invitation to a new user to join the partner account team with the specified role.",
+        "operationId": "PartnerController_createInvitation",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateInvitationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Send an invitation to join the partner account",
+        "tags": [
+          "Partners"
+        ],
+        "x-eqx-audience": [
+          "integrator"
+        ]
+      }
+    },
+    "/api/partner/invitations/{invitationId}/accept": {
+      "post": {
+        "description": "Accepts a pending invitation, granting the authenticated user access to the inviting partner account under the assigned role.",
+        "operationId": "PartnerController_acceptInvitation",
+        "parameters": [
+          {
+            "name": "invitationId",
+            "required": true,
+            "in": "path",
+            "description": "Invitation ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Accept a partner account invitation",
+        "tags": [
+          "Partners"
+        ],
+        "x-eqx-audience": [
+          "integrator"
+        ]
+      }
+    },
+    "/api/partner/invitations/{invitationId}/cancel": {
+      "post": {
+        "description": "Cancels an open invitation before it is accepted. The invitation link becomes invalid immediately.",
+        "operationId": "PartnerController_cancelInvitation",
+        "parameters": [
+          {
+            "name": "invitationId",
+            "required": true,
+            "in": "path",
+            "description": "Invitation ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Cancel a pending partner account invitation",
+        "tags": [
+          "Partners"
+        ],
+        "x-eqx-audience": [
+          "integrator"
+        ]
+      }
+    },
+    "/api/integrator/float": {
+      "get": {
+        "description": "Returns the pre-funded float balances held in the integrator workspace. Optionally filter by `currency` (e.g. `KES`, `NGN`) to retrieve a single balance.",
+        "operationId": "IntegratorFundingController_getIntegratorFloat",
+        "parameters": [
+          {
+            "name": "currency",
+            "required": false,
+            "in": "query",
+            "description": "Filter by currency code",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get integrator float balances for the authenticated integrator workspace",
+        "tags": [
+          "Partners Funding"
+        ],
+        "x-eqx-audience": [
+          "integrator"
+        ]
+      }
+    },
+    "/api/autoconvert/me": {
+      "get": {
+        "description": "Returns the autoconvert configuration and current status for the authenticated user. Autoconvert automatically converts incoming on-chain deposits to fiat via a configured corridor.",
+        "operationId": "AutoconvertController_getAutoconvertSummary",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get the autoconvert summary for the authenticated user",
+        "tags": [
+          "Autoconvert"
+        ],
+        "x-eqx-audience": [
+          "integrator"
+        ]
+      }
+    },
+    "/api/autoconvert/credits": {
+      "get": {
+        "description": "Returns the list of autoconvert credit events attributed to the authenticated user. Each credit represents a successful conversion from crypto to fiat.",
+        "operationId": "AutoconvertController_listCredits",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List autoconvert credits for the authenticated user",
+        "tags": [
+          "Autoconvert"
+        ],
+        "x-eqx-audience": [
+          "integrator"
+        ]
+      }
+    },
+    "/api/autoconvert/credits/{creditId}": {
+      "get": {
+        "description": "Returns the detail of a single autoconvert credit event, including the source amount, converted fiat amount, rate used, and settlement status.",
+        "operationId": "AutoconvertController_getCredit",
+        "parameters": [
+          {
+            "name": "creditId",
+            "required": true,
+            "in": "path",
+            "description": "Autoconvert credit ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get an autoconvert credit by ID",
+        "tags": [
+          "Autoconvert"
+        ],
+        "x-eqx-audience": [
+          "integrator"
+        ]
+      }
+    },
+    "/api/beneficiaries": {
+      "post": {
+        "description": "Creates a new payout beneficiary for the authenticated user. A beneficiary represents a bank account or mobile money number that can receive off-ramp funds. Must be created before it can be referenced in a quote.",
+        "operationId": "BeneficiaryController_createBeneficiary",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a payout beneficiary",
+        "tags": [
+          "Beneficiaries"
+        ],
+        "x-eqx-audience": [
+          "integrator"
+        ]
+      },
+      "get": {
+        "description": "Returns all active payout beneficiaries linked to the authenticated user.",
+        "operationId": "BeneficiaryController_listBeneficiaries",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List beneficiaries for the authenticated user",
+        "tags": [
+          "Beneficiaries"
+        ],
+        "x-eqx-audience": [
+          "integrator"
+        ]
+      }
+    },
+    "/api/beneficiaries/{beneficiaryId}": {
+      "get": {
+        "description": "Returns a single beneficiary. Returns 404 if the beneficiary does not belong to the authenticated user.",
+        "operationId": "BeneficiaryController_getBeneficiary",
+        "parameters": [
+          {
+            "name": "beneficiaryId",
+            "required": true,
+            "in": "path",
+            "description": "Beneficiary ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get a beneficiary by ID",
+        "tags": [
+          "Beneficiaries"
+        ],
+        "x-eqx-audience": [
+          "integrator"
+        ]
+      },
+      "patch": {
+        "description": "Updates the account details or provider for an existing beneficiary. The payout method cannot be changed — create a new beneficiary instead.",
+        "operationId": "BeneficiaryController_updateBeneficiary",
+        "parameters": [
+          {
+            "name": "beneficiaryId",
+            "required": true,
+            "in": "path",
+            "description": "Beneficiary ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update a beneficiary",
+        "tags": [
+          "Beneficiaries"
+        ],
+        "x-eqx-audience": [
+          "integrator"
+        ]
+      },
+      "delete": {
+        "description": "Soft-deletes a beneficiary. Deactivated beneficiaries are excluded from list responses and cannot be used in new quotes.",
+        "operationId": "BeneficiaryController_deactivateBeneficiary",
+        "parameters": [
+          {
+            "name": "beneficiaryId",
+            "required": true,
+            "in": "path",
+            "description": "Beneficiary ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Deactivate a beneficiary",
+        "tags": [
+          "Beneficiaries"
+        ],
+        "x-eqx-audience": [
+          "integrator"
+        ]
+      }
+    },
+    "/api/markets/routes": {
+      "get": {
+        "description": "Returns all active off-ramp corridors (market + payout rail combinations) available to the integrator. Use these to populate corridor selectors in your UI.",
+        "operationId": "MarketsController_listSupportedRetailRoutes",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List supported retail offramp routes",
+        "tags": [
+          "Markets"
+        ],
+        "x-eqx-audience": [
+          "integrator"
+        ]
+      }
+    },
+    "/api/markets/sources": {
+      "get": {
+        "description": "Returns the price data providers currently used to generate rates for each corridor.",
+        "operationId": "MarketsController_listActiveSources",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List active rate sources",
+        "tags": [
+          "Markets"
+        ],
+        "x-eqx-audience": [
+          "integrator"
+        ]
+      }
+    },
+    "/api/markets/rates": {
+      "get": {
+        "description": "Returns the current indicative exchange rates for all active corridors. Suitable for displaying live rates to end users before initiating a quote.",
+        "operationId": "MarketsController_listRates",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List available market rate records",
+        "tags": [
+          "Markets"
+        ],
+        "x-eqx-audience": [
+          "integrator"
+        ]
+      }
+    },
+    "/api/markets/resolve-rate": {
+      "post": {
+        "description": "Locks and returns the current off-ramp rate for a specific corridor. The returned rate is valid for a short window and can be passed directly into a quote request.",
+        "operationId": "MarketsController_resolveRetailRate",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Resolve the locked retail offramp rate for a supported corridor",
+        "tags": [
+          "Markets"
+        ],
+        "x-eqx-audience": [
+          "integrator"
+        ]
+      }
+    },
+    "/api/inbound-funding": {
+      "get": {
+        "description": "Returns on-chain inbound funding events (deposits) detected for the authenticated user. Each event represents a blockchain transaction crediting the custody address, with processing status and attributed amounts.",
+        "operationId": "OnrampController_listInboundFunding",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List inbound funding events for the authenticated user",
+        "tags": [
+          "Onramp"
+        ],
+        "x-eqx-audience": [
+          "integrator"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "EQX Settlement API",
+    "description": "EQX v2.5 staging API for admin, liquidity-provider, and integrator operations.",
+    "version": "2.5.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      },
+      "Idempotency-Key": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Idempotency-Key",
+        "description": "Required on critical write endpoints."
+      }
+    },
+    "schemas": {
+      "CreateQuoteDto": {
+        "type": "object",
+        "properties": {
+          "market": {
+            "type": "string",
+            "description": "Market code for the offramp corridor (e.g. KE, NG)",
+            "example": "KE"
+          },
+          "source_asset": {
+            "type": "string",
+            "description": "Source crypto asset symbol (e.g. USDC, USDT)",
+            "example": "USDC"
+          },
+          "source_amount": {
+            "type": "string",
+            "description": "Amount of source asset to convert (decimal string)",
+            "example": "100.00"
+          },
+          "payout_method": {
+            "type": "string",
+            "enum": [
+              "MOBILE_MONEY",
+              "BANK_TRANSFER"
+            ],
+            "description": "Payout method",
+            "example": "MOBILE_MONEY"
+          },
+          "beneficiary_id": {
+            "type": "string",
+            "description": "Beneficiary ID to receive the payout",
+            "example": "ben_01J5K2M3N4P5Q6R7S8T9"
+          },
+          "sortField": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "market",
+          "source_asset",
+          "source_amount",
+          "payout_method",
+          "beneficiary_id"
+        ]
+      },
+      "CommitRetailPayoutDto": {
+        "type": "object",
+        "properties": {
+          "quote_id": {
+            "type": "string",
+            "description": "Quote ID to commit into a transaction",
+            "example": "qt_01J5K2M3N4P5Q6R7S8T9"
+          },
+          "beneficiary_id": {
+            "type": "string",
+            "description": "Beneficiary ID to receive the payout",
+            "example": "ben_01J5K2M3N4P5Q6R7S8T9"
+          },
+          "otp_token": {
+            "type": "string",
+            "description": "OTP token for step-up authentication if required",
+            "example": "123456"
+          }
+        },
+        "required": [
+          "quote_id",
+          "beneficiary_id"
+        ]
+      },
+      "CreateMembershipDto": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "description": "User ID to add as a member",
+            "example": "usr_01J5K2M3N4P5Q6R7S8T9"
+          },
+          "role": {
+            "type": "string",
+            "description": "Role to assign to the member",
+            "example": "DEVELOPER"
+          }
+        },
+        "required": [
+          "user_id",
+          "role"
+        ]
+      },
+      "UpdateMembershipDto": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "description": "New role to assign to the member",
+            "example": "VIEWER"
+          }
+        },
+        "required": [
+          "role"
+        ]
+      },
+      "CreateInvitationDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Email address of the invitee",
+            "example": "dev@company.com"
+          },
+          "role": {
+            "type": "string",
+            "description": "Role to assign upon acceptance",
+            "example": "DEVELOPER"
+          },
+          "expires_at": {
+            "type": "string",
+            "description": "ISO 8601 expiry timestamp for the invitation",
+            "example": "2026-06-30T00:00:00.000Z"
+          }
+        },
+        "required": [
+          "email",
+          "role"
+        ]
+      },
+      "CreateCreditLineDto": {
+        "type": "object",
+        "properties": {
+          "partner_account_id": {
+            "type": "string"
+          },
+          "credit_limit": {
+            "type": "string",
+            "example": "20000.0000"
+          },
+          "interest_rate_pct": {
+            "type": "object",
+            "example": "5.0000",
+            "nullable": true
+          },
+          "repayment_mode": {
+            "type": "string",
+            "example": "AUTO_REPAY"
+          }
+        },
+        "required": [
+          "partner_account_id",
+          "credit_limit",
+          "repayment_mode"
+        ]
+      },
+      "CreditLineMutationDto": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "string",
+            "example": "1000.0000"
+          },
+          "actor_type": {
+            "type": "object",
+            "example": "USER",
+            "nullable": true
+          },
+          "notes": {
+            "type": "object",
+            "example": "manual adjustment",
+            "nullable": true
+          }
+        },
+        "required": [
+          "amount"
+        ]
+      },
+      "SuspendCreditLineDto": {
+        "type": "object",
+        "properties": {
+          "actor_type": {
+            "type": "object",
+            "example": "USER",
+            "nullable": true
+          },
+          "notes": {
+            "type": "object",
+            "example": "compliance hold",
+            "nullable": true
+          }
+        }
+      },
+      "Object": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreateSettlementRequestDto": {
+        "type": "object",
+        "properties": {
+          "settlement_rail": {
+            "type": "string",
+            "enum": [
+              "CRYPTO",
+              "FOREIGN_BANK"
+            ]
+          },
+          "asset": {
+            "type": "string"
+          },
+          "requested_amount": {
+            "type": "string",
+            "example": "1000.0000"
+          },
+          "settlement_destination_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "settlement_rail",
+          "asset",
+          "requested_amount",
+          "settlement_destination_id"
+        ]
+      },
+      "DispatchSettlementDto": {
+        "type": "object",
+        "properties": {
+          "provider_route_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "provider_route_id"
+        ]
+      },
+      "MarkSettlementSettledDto": {
+        "type": "object",
+        "properties": {
+          "execution_id": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "string",
+            "example": "1000.0000"
+          },
+          "provider_reference": {
+            "type": "object",
+            "nullable": true
+          },
+          "provider_status": {
+            "type": "object",
+            "nullable": true
+          },
+          "tx_hash": {
+            "type": "object",
+            "nullable": true
+          }
+        },
+        "required": [
+          "execution_id",
+          "amount"
+        ]
+      },
+      "CreateTreasuryWithdrawalRequestDto": {
+        "type": "object",
+        "properties": {
+          "network": {
+            "type": "string",
+            "example": "ETH"
+          },
+          "currency": {
+            "type": "string",
+            "example": "USDT"
+          },
+          "amount": {
+            "type": "string",
+            "example": "250.0000"
+          },
+          "destination_address": {
+            "type": "string",
+            "example": "0xbeneficiary"
+          },
+          "source_wallet_type": {
+            "type": "string",
+            "enum": [
+              "HOT",
+              "COLD"
+            ]
+          }
+        },
+        "required": [
+          "network",
+          "currency",
+          "amount",
+          "destination_address"
+        ]
+      },
+      "CreateLpWithdrawalRequestDto": {
+        "type": "object",
+        "properties": {
+          "liquidity_pool_id": {
+            "type": "string"
+          },
+          "lp_record_id": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "string",
+            "example": "1000.0000"
+          },
+          "shares_to_burn": {
+            "type": "string",
+            "example": "1000.0000"
+          },
+          "request_type": {
+            "type": "string",
+            "example": "MANUAL"
+          }
+        },
+        "required": [
+          "liquidity_pool_id",
+          "lp_record_id",
+          "amount",
+          "shares_to_burn",
+          "request_type"
+        ]
+      },
+      "CreateRateDto": {
+        "type": "object",
+        "properties": {
+          "market_code": {
+            "type": "string"
+          },
+          "source_asset": {
+            "type": "string"
+          },
+          "fiat_currency": {
+            "type": "string"
+          },
+          "buy_rate": {
+            "type": "string",
+            "example": "129.3000"
+          },
+          "sell_rate": {
+            "type": "string",
+            "example": "132.5500"
+          },
+          "platform_spread_cut_pct": {
+            "type": "string",
+            "example": "20.0000"
+          },
+          "min_platform_margin": {
+            "type": "string",
+            "example": "2.0000"
+          },
+          "is_active": {
+            "type": "boolean"
+          },
+          "justification": {
+            "type": "object",
+            "nullable": true
+          }
+        },
+        "required": [
+          "market_code",
+          "source_asset",
+          "fiat_currency",
+          "buy_rate",
+          "sell_rate",
+          "platform_spread_cut_pct",
+          "min_platform_margin"
+        ]
+      },
+      "UpdateRateDto": {
+        "type": "object",
+        "properties": {
+          "expected_version": {
+            "type": "number"
+          },
+          "buy_rate": {
+            "type": "string",
+            "example": "129.3000"
+          },
+          "sell_rate": {
+            "type": "string",
+            "example": "132.5500"
+          },
+          "platform_spread_cut_pct": {
+            "type": "string",
+            "example": "20.0000"
+          },
+          "min_platform_margin": {
+            "type": "string",
+            "example": "2.0000"
+          },
+          "is_active": {
+            "type": "boolean"
+          },
+          "justification": {
+            "type": "object",
+            "nullable": true
+          }
+        },
+        "required": [
+          "expected_version"
+        ]
+      },
+      "BulkUpdateRateItemDto": {
+        "type": "object",
+        "properties": {
+          "expected_version": {
+            "type": "number"
+          },
+          "buy_rate": {
+            "type": "string",
+            "example": "129.3000"
+          },
+          "sell_rate": {
+            "type": "string",
+            "example": "132.5500"
+          },
+          "platform_spread_cut_pct": {
+            "type": "string",
+            "example": "20.0000"
+          },
+          "min_platform_margin": {
+            "type": "string",
+            "example": "2.0000"
+          },
+          "is_active": {
+            "type": "boolean"
+          },
+          "justification": {
+            "type": "object",
+            "nullable": true
+          },
+          "rate_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "expected_version",
+          "rate_id"
+        ]
+      },
+      "BulkUpdateRatesDto": {
+        "type": "object",
+        "properties": {
+          "updates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BulkUpdateRateItemDto"
+            }
+          }
+        },
+        "required": [
+          "updates"
+        ]
+      }
+    }
+  }
+}

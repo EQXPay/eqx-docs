@@ -162,13 +162,12 @@
       ]
     }
   ],
-  "openapi": ["/api-reference/openapi.json"],
+  "openapi": "api-reference/openapi.json",
   "api": {
     "baseUrl": "https://api.eqx.com",
     "auth": {
       "method": "bearer"
-    },
-    "languages": ["curl", "typescript", "python", "php", "go"]
+    }
   },
   "mcp": {
     "enabled": true
@@ -185,7 +184,7 @@
     { "name": "sw" }
   ],
   "modeToggle": {
-    "default": "system",
+    "default": "light",
     "isHidden": false
   },
   "theme": "venus",
