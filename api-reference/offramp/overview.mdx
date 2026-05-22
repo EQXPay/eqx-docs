@@ -1,0 +1,18 @@
+---
+title: Offramp
+description: Routes, quotes, and retail payout transactions
+---
+
+The Offramp API provides the full quote-and-commit flow for converting stablecoins to local fiat.
+
+See [Off-Ramp concepts](/concepts/off-ramp) for the flow overview.
+
+## Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/api/routes` | List available offramp corridors |
+| `GET` | `/api/transactions` | List payout transactions (paginated) |
+| `POST` | `/api/quotes` | Create a locked quote |
+| `POST` | `/api/transactions/commit` | Commit a quote into a live payout |
+| `GET` | `/api/transactions/:id` | Get transaction detail |

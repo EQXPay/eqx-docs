@@ -1,0 +1,28 @@
+---
+title: Balances
+description: Float balances and how pre-funded liquidity works
+---
+
+## Integrator float
+
+Your integrator workspace holds **pre-funded float balances** — fiat currency held in custody that EQX draws against when executing payouts on your behalf.
+
+Float balances are per-currency. If your workspace supports KES and NGN payouts, you will have a separate float balance for each.
+
+```bash
+GET /api/integrator/float
+GET /api/integrator/float?currency=KES
+```
+
+## Float vs. user balances
+
+| Concept | What it is |
+|---------|-----------|
+| **Integrator float** | Your workspace's pre-funded fiat pool — funds payouts |
+| **User balance** | Credits attributed to a specific end-user after deposit processing (e.g. after `deposit.credited`) |
+
+## Keeping float topped up
+
+EQX does not automatically replenish float. You are responsible for monitoring your balances and funding them before they are exhausted. If float falls below the amount required for a payout, the payout will fail.
+
+Subscribe to low-balance alerts from the EQX dashboard → **Settings → Alerts** (coming soon).

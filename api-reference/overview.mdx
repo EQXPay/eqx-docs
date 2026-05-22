@@ -1,0 +1,48 @@
+---
+title: API Reference
+description: Full integrator API surface for the EQX Settlement Platform
+---
+
+The EQX Settlement API exposes REST endpoints over HTTPS. All requests must be authenticated with a Bearer token. See [Authentication](/authentication) for details.
+
+## Base URL
+
+```
+https://api.eqx.com
+```
+
+## Request format
+
+- **Content-Type**: `application/json` for all `POST` and `PATCH` requests
+- **Authorization**: `Bearer <token>` on every request
+- **Idempotency-Key**: Required on state-mutating operations (see [Authentication](/authentication))
+
+## Response format
+
+All responses are JSON. Successful responses return the resource or a list. Errors return the [standard error envelope](/errors).
+
+## Sections
+
+<CardGroup cols={2}>
+  <Card title="Offramp" icon="money-bill-transfer" href="/api-reference/offramp/overview">
+    Routes, quotes, and payout transactions.
+  </Card>
+  <Card title="Autoconvert" icon="rotate" href="/api-reference/autoconvert/overview">
+    On-deposit auto-conversion summary and credit history.
+  </Card>
+  <Card title="Onramp" icon="arrow-down-to-line" href="/api-reference/onramp/overview">
+    Inbound on-chain funding events.
+  </Card>
+  <Card title="Beneficiaries" icon="user-group" href="/api-reference/beneficiaries/overview">
+    Create and manage payout recipients.
+  </Card>
+  <Card title="Markets" icon="globe" href="/api-reference/markets/overview">
+    Exchange rates and supported currencies.
+  </Card>
+  <Card title="Partners" icon="building" href="/api-reference/partners/overview">
+    Workspace management, memberships, and invitations.
+  </Card>
+  <Card title="Partners Funding" icon="coins" href="/api-reference/partners-funding/overview">
+    Integrator float balances.
+  </Card>
+</CardGroup>

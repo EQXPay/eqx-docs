@@ -1,0 +1,58 @@
+---
+title: Errors
+description: EQX error envelope format and common error codes
+---
+
+## Error envelope
+
+All EQX API errors return a consistent JSON envelope:
+
+```json
+{
+  "statusCode": 400,
+  "message": "quote has expired",
+  "error": "Bad Request"
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `statusCode` | number | HTTP status code |
+| `message` | string | Human-readable description of the error |
+| `error` | string | HTTP status text |
+
+---
+
+## HTTP status codes
+
+| Code | Meaning | Common causes |
+|------|---------|---------------|
+| `400` | Bad Request | Invalid request body, validation failure, expired quote |
+| `401` | Unauthorized | Missing or invalid Bearer token |
+| `403` | Forbidden | Your token does not have permission for this operation |
+| `404` | Not Found | The requested resource does not exist or is not visible to your workspace |
+| `409` | Conflict | Idempotency key collision with different request body |
+| `422` | Unprocessable Entity | Request is well-formed but cannot be processed (e.g. insufficient float) |
+| `429` | Too Many Requests | Rate limit exceeded — back off and retry |
+| `500` | Internal Server Error | Unexpected server-side error — contact support if persistent |
+
+---
+
+## Retries
+
+- **`4xx` errors**: Do not retry without changing the request. The request is structurally invalid or the resource state won't change.
+- **`429` errors**: Implement exponential back-off. Respect the `Retry-After` header if present.
+- **`5xx` errors**: Safe to retry with exponential back-off. Use your idempotency key so the operation is not duplicated.
+- **Network timeouts**: Replay the original request with the **same** `Idempotency-Key` — EQX will return the cached result if the first attempt succeeded.
+
+---
+
+## Rate limits
+
+EQX enforces per-token rate limits. The limits are returned in response headers on every request:
+
+| Header | Description |
+|--------|-------------|
+| `X-RateLimit-Limit` | Total requests allowed per window |
+| `X-RateLimit-Remaining` | Requests remaining in the current window |
+| `X-RateLimit-Reset` | Unix timestamp when the window resets |

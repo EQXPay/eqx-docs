@@ -1,0 +1,55 @@
+---
+title: AI Integrations
+description: Use EQX with AI agents via MCP and llms.txt
+---
+
+EQX exposes its integrator API surface to AI agents and LLM-powered tools through two mechanisms: an **MCP server** and an **`llms.txt` manifest**.
+
+## MCP Server
+
+The EQX MCP (Model Context Protocol) server lets AI agents like Claude and Cursor call EQX API operations directly as tools.
+
+**Endpoint:**
+```
+https://docs.eqx.com/mcp
+```
+
+**Connect in Claude Desktop** (`claude_desktop_config.json`):
+```json
+{
+  "mcpServers": {
+    "eqx": {
+      "url": "https://docs.eqx.com/mcp",
+      "headers": {
+        "Authorization": "Bearer <your_token>"
+      }
+    }
+  }
+}
+```
+
+Once connected, Claude can call tools like `create_quote`, `commit_transaction`, `list_beneficiaries`, and `get_transaction_detail` directly from a conversation.
+
+**Example prompt:**
+> "Create a KES payout of 100 USDC to beneficiary ben_01J5K2 using M-Pesa."
+
+The MCP server maps this to `POST /api/quotes` followed by `POST /api/transactions/commit`.
+
+---
+
+## llms.txt
+
+The EQX `llms.txt` file provides a machine-readable index of the integrator API surface — optimised for LLM context windows.
+
+```
+https://docs.eqx.com/llms.txt
+```
+
+Use it to prime an LLM with EQX API knowledge before asking it to generate integration code:
+
+```bash
+curl https://docs.eqx.com/llms.txt | pbcopy
+# Paste into your AI tool's context
+```
+
+The file is automatically updated whenever the OpenAPI spec changes via CI.

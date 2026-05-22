@@ -1,0 +1,33 @@
+---
+title: Beneficiaries
+description: Managing payout recipients
+---
+
+A **beneficiary** is a saved payout recipient — a person or business with a mobile money account or bank account that can receive fiat payouts.
+
+Beneficiaries are scoped to your integrator workspace. You create them once and reference them by `beneficiary_id` in quotes and transactions.
+
+## Creating a beneficiary
+
+```bash
+POST /api/beneficiaries
+```
+
+Required fields vary by payout method:
+
+| Payout method | Required fields |
+|---------------|----------------|
+| `MOBILE_MONEY` | `phone_number`, `network`, `country` |
+| `BANK_TRANSFER` | `account_number`, `bank_code`, `country` |
+
+## Beneficiary validation
+
+EQX performs lightweight format validation at creation time. Full account verification (e.g. confirming the mobile number is registered with the network) happens asynchronously as part of the first payout — it is not a separate verification step.
+
+## Re-using beneficiaries
+
+The same beneficiary can be the target of multiple transactions. There is no limit on how many transactions a beneficiary can receive.
+
+## Deleting a beneficiary
+
+Deleting a beneficiary does not affect historical transactions that referenced it. Past transaction records retain the beneficiary details at the time of the transaction.

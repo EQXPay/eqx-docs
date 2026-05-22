@@ -1,0 +1,70 @@
+---
+title: TypeScript SDK
+description: Official Node.js / TypeScript client for the EQX Settlement API
+sidebarTitle: TypeScript
+---
+
+<Note>
+  The TypeScript SDK is coming soon. This page previews the planned interface.
+</Note>
+
+## Install
+
+```bash
+npm install @eqx/sdk
+# or
+pnpm add @eqx/sdk
+```
+
+## Initialize
+
+```typescript
+import { EqxClient } from '@eqx/sdk';
+
+const eqx = new EqxClient({
+  apiKey: process.env.EQX_API_KEY,
+  baseUrl: 'https://api.eqx.com', // optional, defaults to production
+});
+```
+
+## Example: create a payout
+
+```typescript
+// 1. Create a quote
+const quote = await eqx.quotes.create({
+  market: 'KE',
+  sourceAsset: 'USDC',
+  sourceAmount: '100.00',
+  payoutMethod: 'MOBILE_MONEY',
+  beneficiaryId: 'ben_01J5K2M3N4P5Q6R7S8T9',
+});
+
+// 2. Commit the transaction
+const transaction = await eqx.transactions.commit({
+  quoteId: quote.quoteId,
+  beneficiaryId: 'ben_01J5K2M3N4P5Q6R7S8T9',
+}, {
+  idempotencyKey: crypto.randomUUID(),
+});
+
+console.log(transaction.status); // 'PROCESSING'
+```
+
+## Webhook verification helper
+
+```typescript
+import { verifyWebhookSignature } from '@eqx/sdk/webhooks';
+
+app.post('/webhooks/eqx', (req, res) => {
+  const valid = verifyWebhookSignature(
+    req.rawBody,
+    req.headers['x-eqx-signature'],
+    process.env.EQX_WEBHOOK_SECRET,
+  );
+  if (!valid) return res.status(401).end();
+
+  const { event, payload } = req.body;
+  // handle event...
+  res.status(200).end();
+});
+```

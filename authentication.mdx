@@ -1,0 +1,57 @@
+---
+title: Authentication
+description: Bearer tokens and idempotency keys — how EQX API security works
+---
+
+## Bearer token
+
+All EQX API requests require a Bearer token in the `Authorization` header.
+
+```http
+Authorization: Bearer <your_token>
+```
+
+Tokens are scoped to your integrator workspace. Generate and rotate them from the EQX dashboard → **Settings → API Keys**. Tokens do not expire by default; rotating a token immediately invalidates the previous one.
+
+<Warning>
+  Never commit tokens to source control. Use environment variables or a secrets manager.
+</Warning>
+
+---
+
+## Idempotency keys
+
+Write operations that create or mutate financial state require an `Idempotency-Key` header:
+
+```http
+Idempotency-Key: <your_unique_key>
+```
+
+The key must be unique per logical operation — typically a UUID v4 or a client-generated reference. EQX stores the outcome of the first request for 24 hours; subsequent requests with the same key return the cached response without re-executing the operation.
+
+**When idempotency keys are required:**
+
+| Endpoint | Required |
+|----------|----------|
+| `POST /api/transactions/commit` | Yes |
+
+<Tip>
+  Generate your idempotency key before making the request and store it alongside your transaction record. If you receive a network timeout, you can safely replay the request using the same key.
+</Tip>
+
+---
+
+## Token scopes
+
+Tokens issued to integrators cover all integrator-audience endpoints. There is no sub-scoping within the integrator tier at this time — any valid integrator token can call any integrator endpoint within your workspace.
+
+---
+
+## API base URL
+
+| Environment | Base URL |
+|------------|----------|
+| Production | `https://api.eqx.com` |
+| Staging | `https://api.staging.eqx.com` |
+
+Use staging for integration testing. Staging payouts are simulated — no real funds move.
