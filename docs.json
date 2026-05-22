@@ -1,0 +1,205 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "palm",
+  "name": "EQX",
+  "colors": {
+    "primary": "#E42313",
+    "light": "#FF6B35",
+    "dark": "#C41E0F"
+  },
+  "favicon": "/images/favicon.svg",
+  "navigation": {
+    "versions": [
+      {
+        "version": "v2.5",
+        "default": true,
+        "tabs": [
+          {
+            "tab": "Documentation",
+            "anchors": [
+              {
+                "anchor": "Documentation",
+                "icon": "book-open",
+                "groups": [
+                  {
+                    "group": "Get Started",
+                    "pages": [
+                      "introduction",
+                      "quickstart",
+                      "authentication"
+                    ]
+                  },
+                  {
+                    "group": "Concepts",
+                    "pages": [
+                      "concepts/settlements",
+                      "concepts/balances",
+                      "concepts/beneficiaries",
+                      "concepts/off-ramp",
+                      "concepts/autoconvert"
+                    ]
+                  },
+                  {
+                    "group": "Guides",
+                    "pages": [
+                      "errors"
+                    ]
+                  },
+                  {
+                    "group": "AI Integrations",
+                    "pages": [
+                      "ai-integrations"
+                    ]
+                  }
+                ]
+              },
+              {
+                "anchor": "Status",
+                "href": "https://status.eqx.com",
+                "icon": "signal"
+              },
+              {
+                "anchor": "Community",
+                "href": "https://eqx.com/community",
+                "icon": "slack"
+              }
+            ]
+          },
+          {
+            "tab": "API Reference",
+            "anchors": [
+              {
+                "anchor": "API Reference",
+                "icon": "rectangle-terminal",
+                "groups": [
+                  {
+                    "group": "API Reference",
+                    "pages": [
+                      "api-reference/overview",
+                      {
+                        "group": "Offramp",
+                        "pages": [
+                          "api-reference/offramp/overview"
+                        ]
+                      },
+                      {
+                        "group": "Autoconvert",
+                        "pages": [
+                          "api-reference/autoconvert/overview"
+                        ]
+                      },
+                      {
+                        "group": "Onramp",
+                        "pages": [
+                          "api-reference/onramp/overview"
+                        ]
+                      },
+                      {
+                        "group": "Beneficiaries",
+                        "pages": [
+                          "api-reference/beneficiaries/overview"
+                        ]
+                      },
+                      {
+                        "group": "Markets",
+                        "pages": [
+                          "api-reference/markets/overview"
+                        ]
+                      },
+                      {
+                        "group": "Partners",
+                        "pages": [
+                          "api-reference/partners/overview"
+                        ]
+                      },
+                      {
+                        "group": "Partners Funding",
+                        "pages": [
+                          "api-reference/partners-funding/overview"
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Webhooks",
+            "anchors": [
+              {
+                "anchor": "Webhooks",
+                "icon": "webhook",
+                "groups": [
+                  {
+                    "group": "Webhooks",
+                    "pages": [
+                      "webhooks/overview",
+                      "webhooks/events"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "SDKs",
+            "anchors": [
+              {
+                "anchor": "SDKs",
+                "icon": "code",
+                "groups": [
+                  {
+                    "group": "SDKs",
+                    "pages": [
+                      "sdks/overview",
+                      "sdks/typescript",
+                      "sdks/python",
+                      "sdks/php"
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "logo": {
+    "light": "/images/logo/logo-light.svg",
+    "dark": "/images/logo/logo-dark.svg"
+  },
+  "api": {
+    "openapi": "api-reference/openapi.json",
+    "mdx": {
+      "server": "https://api.eqx.com",
+      "auth": {
+        "method": "bearer"
+      }
+    }
+  },
+  "appearance": {
+    "default": "light",
+    "strict": false
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Support",
+        "href": "mailto:support@eqx.com"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Dashboard",
+      "href": "https://app.eqx.com"
+    }
+  },
+  "footer": {
+    "socials": {
+      "twitter": "https://twitter.com/eqxhq",
+      "linkedin": "https://linkedin.com/company/eqxhq"
+    }
+  }
+}
