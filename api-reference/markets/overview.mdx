@@ -1,0 +1,19 @@
+---
+title: Markets
+description: Exchange rates and supported currencies
+---
+
+The Markets API provides current exchange rates and the list of supported corridors.
+
+## Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/api/markets/rates` | Get current exchange rates |
+| `GET` | `/api/markets/rates/:currency` | Get rate for a specific currency pair |
+| `GET` | `/api/markets/currencies` | List supported currencies |
+| `GET` | `/api/markets/providers` | List active payout providers by corridor |
+
+## Rate freshness
+
+Rates are updated in real time from liquidity provider feeds. Each rate response includes a `valid_until` timestamp indicating when the rate was last refreshed. Quotes lock a specific rate for 90 seconds — see [Off-Ramp](/concepts/off-ramp).

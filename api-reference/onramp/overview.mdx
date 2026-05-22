@@ -1,0 +1,22 @@
+---
+title: Onramp
+description: Inbound on-chain funding events
+---
+
+The Onramp API exposes inbound funding events — on-chain deposits detected for the authenticated user's custody address.
+
+## Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/api/inbound-funding` | List inbound funding events for the authenticated user |
+
+## Event statuses
+
+| Status | Meaning |
+|--------|---------|
+| `DETECTED` | Deposit seen on-chain, not yet confirmed |
+| `CONFIRMED` | Required block confirmations reached |
+| `PROCESSING` | Being processed (autoconvert or credit) |
+| `CREDITED` | Successfully credited to user balance |
+| `FAILED` | Processing failed |

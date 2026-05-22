@@ -1,0 +1,18 @@
+---
+title: Beneficiaries
+description: Create and manage payout recipients
+---
+
+Beneficiaries are saved payout recipients scoped to your integrator workspace. Create them once; reference by ID in quotes and transactions.
+
+See [Beneficiaries concepts](/concepts/beneficiaries) for data model details.
+
+## Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/api/beneficiaries` | Create a new beneficiary |
+| `GET` | `/api/beneficiaries` | List beneficiaries for the workspace |
+| `GET` | `/api/beneficiaries/:id` | Get a beneficiary by ID |
+| `PATCH` | `/api/beneficiaries/:id` | Update a beneficiary |
+| `DELETE` | `/api/beneficiaries/:id` | Delete a beneficiary |

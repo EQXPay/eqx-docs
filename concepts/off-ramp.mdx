@@ -1,0 +1,51 @@
+---
+title: Off-Ramp
+description: The quote-and-commit flow for stablecoin-to-fiat payouts
+---
+
+The **retail off-ramp** is EQX's primary payout flow. It converts a stablecoin amount into local fiat delivered to a beneficiary's mobile money wallet or bank account.
+
+## Flow overview
+
+```
+1. GET  /api/routes           → choose corridor
+2. POST /api/quotes           → lock rate (90s TTL)
+3. POST /api/transactions/commit → execute payout
+4. GET  /api/transactions/:id → poll status (or use webhooks)
+```
+
+## Quotes
+
+A quote locks a conversion rate for a specific corridor and amount. Quotes expire after **90 seconds**. You must commit the quote before it expires.
+
+Key quote fields:
+
+| Field | Description |
+|-------|-------------|
+| `quote_id` | Reference for the commit step |
+| `source_amount` | Amount of stablecoin to be consumed |
+| `destination_amount` | Fiat amount the beneficiary will receive |
+| `rate` | Locked exchange rate |
+| `expires_at` | Quote expiry timestamp (ISO 8601) |
+
+## Transactions
+
+Committing a quote creates a **payout transaction**. The transaction moves through these statuses:
+
+```
+PROCESSING → DISPATCHED → COMPLETED
+           ↘ FAILED
+           ↘ RECONCILIATION_REQUIRED
+```
+
+| Status | Meaning |
+|--------|---------|
+| `PROCESSING` | Committed, awaiting dispatch to provider |
+| `DISPATCHED` | Submitted to payout provider |
+| `COMPLETED` | Provider confirmed delivery |
+| `FAILED` | Terminal failure |
+| `RECONCILIATION_REQUIRED` | Provider response is ambiguous; manual review needed |
+
+## Pagination
+
+`GET /api/transactions` supports offset pagination via `page` and `per_page` query parameters. Default page size is 20; maximum is 100.

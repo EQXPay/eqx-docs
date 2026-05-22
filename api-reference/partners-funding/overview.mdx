@@ -1,0 +1,37 @@
+---
+title: Partners Funding
+description: Integrator float balances
+---
+
+The Partners Funding API exposes the pre-funded float balances held in your integrator workspace.
+
+See [Balances concepts](/concepts/balances) for how float works.
+
+## Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/api/integrator/float` | Get float balances (optionally filter by `currency`) |
+
+## Example
+
+```bash
+# All currencies
+GET /api/integrator/float
+
+# Single currency
+GET /api/integrator/float?currency=KES
+```
+
+**Response:**
+```json
+{
+  "balances": [
+    {
+      "currency": "KES",
+      "available": "245000.00",
+      "reserved": "13050.00"
+    }
+  ]
+}
+```

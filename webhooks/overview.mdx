@@ -1,0 +1,97 @@
+---
+title: Webhooks
+description: Real-time event notifications for payouts, deposits, and settlements
+---
+
+EQX sends HTTP `POST` requests to your registered endpoints when important events occur in your workspace. Use webhooks instead of polling to react to payout completions, deposit credits, and settlement state changes in real time.
+
+## Setup
+
+1. Go to **EQX Dashboard → Settings → Webhooks**
+2. Click **Add endpoint** and enter your HTTPS URL
+3. Select the events you want to receive
+4. Copy the signing secret — you'll need it to verify payloads
+
+## Delivery
+
+EQX delivers events with a short-lived retry policy:
+
+- **Timeout**: 30 seconds per attempt
+- **Retries**: Up to 5 attempts with exponential back-off (30s, 1m, 5m, 30m, 2h)
+- **Ordering**: Events are not guaranteed to arrive in order. Use the `entity_id` and event `attempt_number` to reconcile.
+- **At-least-once**: An event may be delivered more than once. Use the `request_id` as an idempotency key in your handler.
+
+## Payload envelope
+
+Every webhook delivery has this structure:
+
+```json
+{
+  "event": "retail.payout.completed",
+  "entity_table": "retail_payout_executions",
+  "entity_id": "exec_01J5K2M3N4P5Q6R7S8T9",
+  "payload": { ... },
+  "attempt_number": 1,
+  "request_id": "req_01J5K2M3N4P5Q6R7S8T9",
+  "correlation_id": "txn_01J5K2M3N4P5Q6R7S8T9"
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `event` | string | Event name (see [Events](/webhooks/events)) |
+| `entity_table` | string | Database table of the affected entity |
+| `entity_id` | string | ID of the affected entity |
+| `payload` | object | Event-specific data (see per-event docs) |
+| `attempt_number` | number | Delivery attempt (1 = first attempt) |
+| `request_id` | string | Unique delivery ID — use for idempotency |
+| `correlation_id` | string | ID of the originating transaction or request |
+
+## Signature verification
+
+Every delivery includes an `X-EQX-Signature` header containing an HMAC-SHA256 signature of the raw request body, signed with your endpoint's signing secret.
+
+**Verify in Node.js:**
+
+```typescript
+import { createHmac } from 'crypto';
+
+function verifyWebhook(rawBody: string, signature: string, secret: string): boolean {
+  const expected = createHmac('sha256', secret)
+    .update(rawBody, 'utf8')
+    .digest('hex');
+  return `sha256=${expected}` === signature;
+}
+```
+
+**Verify in Python:**
+
+```python
+import hmac, hashlib
+
+def verify_webhook(raw_body: bytes, signature: str, secret: str) -> bool:
+    expected = 'sha256=' + hmac.new(
+        secret.encode(), raw_body, hashlib.sha256
+    ).hexdigest()
+    return hmac.compare_digest(expected, signature)
+```
+
+<Warning>
+  Always verify the signature before processing the payload. Reject requests that fail verification with HTTP 401.
+</Warning>
+
+## HTTP headers
+
+| Header | Description |
+|--------|-------------|
+| `X-EQX-Signature` | `sha256=<hmac>` — HMAC-SHA256 of raw body |
+| `X-EQX-Event` | Event name (e.g. `retail.payout.completed`) |
+| `X-EQX-Attempt` | Delivery attempt number |
+| `X-EQX-Request-Id` | Unique delivery ID |
+| `X-EQX-Correlation-Id` | Originating transaction ID |
+
+## Responding to webhooks
+
+Return **HTTP 2xx** within 30 seconds to acknowledge delivery. Any other status or a timeout triggers a retry.
+
+Perform expensive processing asynchronously — acknowledge immediately, then process in a background job.

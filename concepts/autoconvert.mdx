@@ -1,0 +1,53 @@
+---
+title: Autoconvert
+description: Automatic crypto-to-fiat conversion on deposit
+---
+
+**Autoconvert** is a zero-touch deposit processing mode. When enabled for a user, EQX automatically converts their incoming on-chain deposits to fiat and credits their balance — no manual quote-and-commit step required.
+
+## How it works
+
+```
+On-chain deposit detected
+         ↓
+   EQX custody confirms
+         ↓
+   Autoconvert policy evaluated
+         ↓
+   Conversion executed at market rate
+         ↓
+   Fiat balance credited → deposit.credited webhook fired
+```
+
+## Autoconvert summary
+
+Fetch the autoconvert configuration and status for an authenticated user:
+
+```bash
+GET /api/autoconvert/me
+```
+
+Returns the corridor, processing mode, and most recent conversion event.
+
+## Credits
+
+Each successful autoconvert produces a **credit** — a record of the conversion with the source amount, fiat amount, rate used, and settlement status.
+
+```bash
+GET /api/autoconvert/credits          # list all credits
+GET /api/autoconvert/credits/:id      # single credit detail
+```
+
+## Processing modes
+
+Autoconvert honours the same policy processing modes as manual settlements:
+
+| Mode | Effect |
+|------|--------|
+| `AUTO` | Converts immediately without intervention |
+| `REVIEW_REQUIRED` | Holds for compliance review before converting |
+| `MANUAL_ONLY` | Does not auto-convert; requires manual admin action |
+
+## Webhooks
+
+Subscribe to `deposit.credited` to receive a notification when an autoconvert completes and the user's balance is updated.

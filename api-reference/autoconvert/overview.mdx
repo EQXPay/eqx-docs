@@ -1,0 +1,16 @@
+---
+title: Autoconvert
+description: On-deposit auto-conversion summary and credit history
+---
+
+The Autoconvert API lets you read the autoconvert configuration and credit history for authenticated users.
+
+See [Autoconvert concepts](/concepts/autoconvert) for how automatic conversion works.
+
+## Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/api/autoconvert/me` | Get autoconvert summary for the authenticated user |
+| `GET` | `/api/autoconvert/credits` | List autoconvert credits |
+| `GET` | `/api/autoconvert/credits/:id` | Get a single credit by ID |

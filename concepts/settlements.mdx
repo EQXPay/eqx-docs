@@ -1,0 +1,37 @@
+---
+title: Settlements
+description: How EQX moves value from stablecoin to fiat
+---
+
+A **settlement request** is the core record in EQX. It represents an obligation to convert a specified amount of a source asset (e.g. USDC) into a fiat currency (e.g. KES) and deliver it via a payout rail.
+
+## Lifecycle
+
+```
+PENDING → FUNDED → EXECUTED → COMPLETED
+                 ↘ FAILED
+```
+
+| Status | Meaning |
+|--------|---------|
+| `PENDING` | Created, awaiting liquidity allocation |
+| `FUNDED` | Liquidity pool has allocated funds to cover this settlement |
+| `EXECUTED` | Instruction submitted to the payout provider or bank rail |
+| `COMPLETED` | Provider confirms delivery to the destination |
+| `FAILED` | Terminal failure — provider rejected or rail returned an error |
+
+## Processing modes
+
+Policy rules evaluate each settlement and assign a processing mode:
+
+| Mode | Behaviour |
+|------|-----------|
+| `AUTO` | Processed end-to-end without human intervention |
+| `REVIEW_REQUIRED` | Queued for compliance review before execution |
+| `MANUAL_ONLY` | Requires explicit admin action to proceed |
+
+The mode and any triggering `policy_reason_codes` are included in the `settlement.request.created` webhook payload.
+
+## Webhooks
+
+Subscribe to `settlement.request.created` to be notified when a new settlement is initiated in your workspace.

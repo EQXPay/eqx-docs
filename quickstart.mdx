@@ -1,0 +1,122 @@
+---
+title: Quickstart
+description: Make your first EQX API call in under 5 minutes
+---
+
+## Prerequisites
+
+- An EQX integrator account ([sign up](https://app.eqx.com/register))
+- A Bearer token from the EQX dashboard → **Settings → API Keys**
+
+---
+
+## Step 1 — Check available routes
+
+Fetch the corridors available to your workspace. This tells you which source assets, destination countries, and payout methods are enabled.
+
+```bash
+curl https://api.eqx.com/api/routes \
+  -H "Authorization: Bearer <your_token>"
+```
+
+**Response excerpt:**
+```json
+{
+  "routes": [
+    {
+      "id": "route_ke_usdc_mpesa",
+      "market": "KE",
+      "source_asset": "USDC",
+      "payout_method": "MOBILE_MONEY",
+      "destination_currency": "KES",
+      "min_amount": "10.00",
+      "max_amount": "5000.00"
+    }
+  ]
+}
+```
+
+---
+
+## Step 2 — Create a quote
+
+Lock in an exchange rate for a specific amount and corridor. Quotes are valid for 90 seconds.
+
+```bash
+curl -X POST https://api.eqx.com/api/quotes \
+  -H "Authorization: Bearer <your_token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "market": "KE",
+    "source_asset": "USDC",
+    "source_amount": "100.00",
+    "payout_method": "MOBILE_MONEY",
+    "beneficiary_id": "ben_01J5K2M3N4P5Q6R7S8T9"
+  }'
+```
+
+**Response:**
+```json
+{
+  "quote_id": "qt_01J5K2M3N4P5Q6R7S8T9",
+  "source_amount": "100.00",
+  "source_asset": "USDC",
+  "destination_amount": "13050.00",
+  "destination_currency": "KES",
+  "rate": "130.50",
+  "expires_at": "2026-05-22T12:01:30.000Z"
+}
+```
+
+<Note>
+  You must create a beneficiary before creating a quote. See [Beneficiaries](/api-reference/beneficiaries/overview) to add one.
+</Note>
+
+---
+
+## Step 3 — Commit the transaction
+
+Convert the accepted quote into a live payout. Include an `Idempotency-Key` header to prevent duplicate submissions.
+
+```bash
+curl -X POST https://api.eqx.com/api/transactions/commit \
+  -H "Authorization: Bearer <your_token>" \
+  -H "Content-Type: application/json" \
+  -H "Idempotency-Key: <unique_key>" \
+  -d '{
+    "quote_id": "qt_01J5K2M3N4P5Q6R7S8T9",
+    "beneficiary_id": "ben_01J5K2M3N4P5Q6R7S8T9"
+  }'
+```
+
+**Response:**
+```json
+{
+  "transaction_id": "txn_01J5K2M3N4P5Q6R7S8T9",
+  "status": "PROCESSING",
+  "source_amount": "100.00",
+  "destination_amount": "13050.00",
+  "created_at": "2026-05-22T12:00:45.000Z"
+}
+```
+
+The payout is now in the queue. You'll receive a `retail.payout.completed` or `retail.payout.failed` webhook when the provider confirms the outcome. Subscribe to webhooks from the EQX dashboard → **Settings → Webhooks**.
+
+---
+
+## What's next?
+
+<CardGroup cols={2}>
+  <Card title="Webhooks" icon="webhook" href="/webhooks/overview">
+    Receive real-time status updates for payouts, deposits, and settlements.
+  </Card>
+  <Card title="Error reference" icon="triangle-exclamation" href="/errors">
+    Understand error codes and how to handle retries.
+  </Card>
+  <Card title="Autoconvert" icon="rotate" href="/concepts/autoconvert">
+    Configure automatic crypto-to-fiat conversion on deposit.
+  </Card>
+  <Card title="API Reference" icon="rectangle-terminal" href="/api-reference/overview">
+    Browse the full integrator API surface.
+  </Card>
+</CardGroup>

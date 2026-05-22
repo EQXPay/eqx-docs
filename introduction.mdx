@@ -1,0 +1,55 @@
+---
+title: Introduction
+description: The EQX Settlement API — stablecoin-to-fiat infrastructure for Africa's digital economy
+---
+
+## What is EQX?
+
+EQX is a custody-and-settlement platform that lets businesses accept stablecoin payments and settle them as local fiat currency — across Kenya, Nigeria, Ghana, South Africa, and more.
+
+You send USDC. Your customers receive KES, NGN, GHS, or ZAR directly to mobile money or bank accounts. EQX handles custody, liquidity, compliance, and payout routing in between.
+
+## Who is this API for?
+
+The EQX Settlement API is designed for **integrators**: fintech platforms, payment processors, neobanks, and remittance services that want to embed African payout infrastructure into their products.
+
+If you're an individual end-user sending a single payment, you don't need this API — use the EQX app directly.
+
+## What you can build
+
+<CardGroup cols={2}>
+  <Card title="Retail Offramp" icon="money-bill-transfer">
+    Accept stablecoins from your users and pay out local fiat to mobile money or bank accounts via the EQX quote-and-commit flow.
+  </Card>
+  <Card title="Autoconvert" icon="rotate">
+    Configure automatic conversion of on-chain deposits to fiat — EQX detects the deposit, converts, and credits without manual intervention.
+  </Card>
+  <Card title="Inbound Funding" icon="arrow-down-to-line">
+    Track on-chain inbound deposits to EQX custody addresses attributed to your users, with full processing status.
+  </Card>
+  <Card title="Partner Workspace" icon="building">
+    Manage your integrator team — invite members, assign roles, and view your pre-funded float balances.
+  </Card>
+</CardGroup>
+
+## Regions covered
+
+| Country | Currency | Rails |
+|---------|----------|-------|
+| Kenya | KES | M-Pesa, Airtel Money, Bank Transfer |
+| Nigeria | NGN | Bank Transfer, NIP |
+| Ghana | GHS | Mobile Money, Bank Transfer |
+| South Africa | ZAR | Bank Transfer, EFT |
+
+More corridors are added regularly. Check `GET /api/routes` for the live list.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Make your first API call in under 5 minutes.
+  </Card>
+  <Card title="Authentication" icon="key" href="/authentication">
+    Learn how Bearer tokens and idempotency keys work.
+  </Card>
+</CardGroup>

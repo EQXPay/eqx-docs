@@ -1,0 +1,68 @@
+---
+title: PHP SDK
+description: Official PHP client for the EQX Settlement API
+sidebarTitle: PHP
+---
+
+<Note>
+  The PHP SDK is coming soon. This page previews the planned interface.
+</Note>
+
+## Install
+
+```bash
+composer require eqx/sdk
+```
+
+## Initialize
+
+```php
+use Eqx\EqxClient;
+
+$client = new EqxClient([
+    'apiKey' => getenv('EQX_API_KEY'),
+]);
+```
+
+## Example: create a payout
+
+```php
+// 1. Create a quote
+$quote = $client->quotes->create([
+    'market'         => 'KE',
+    'source_asset'   => 'USDC',
+    'source_amount'  => '100.00',
+    'payout_method'  => 'MOBILE_MONEY',
+    'beneficiary_id' => 'ben_01J5K2M3N4P5Q6R7S8T9',
+]);
+
+// 2. Commit the transaction
+$transaction = $client->transactions->commit(
+    [
+        'quote_id'       => $quote->quoteId,
+        'beneficiary_id' => 'ben_01J5K2M3N4P5Q6R7S8T9',
+    ],
+    idempotencyKey: \Ramsey\Uuid\Uuid::uuid4()->toString()
+);
+
+echo $transaction->status; // 'PROCESSING'
+```
+
+## Webhook verification helper
+
+```php
+use Eqx\Webhooks\Signature;
+
+$rawBody  = file_get_contents('php://input');
+$sig      = $_SERVER['HTTP_X_EQX_SIGNATURE'] ?? '';
+$secret   = getenv('EQX_WEBHOOK_SECRET');
+
+if (!Signature::verify($rawBody, $sig, $secret)) {
+    http_response_code(401);
+    exit;
+}
+
+$event = json_decode($rawBody, true);
+// handle $event...
+http_response_code(200);
+```

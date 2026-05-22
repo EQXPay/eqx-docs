@@ -1,0 +1,67 @@
+---
+title: Python SDK
+description: Official Python client for the EQX Settlement API
+sidebarTitle: Python
+---
+
+<Note>
+  The Python SDK is coming soon. This page previews the planned interface.
+</Note>
+
+## Install
+
+```bash
+pip install eqx-sdk
+```
+
+## Initialize
+
+```python
+from eqx import EqxClient
+
+client = EqxClient(api_key=os.environ["EQX_API_KEY"])
+```
+
+## Example: create a payout
+
+```python
+import uuid
+
+# 1. Create a quote
+quote = client.quotes.create(
+    market="KE",
+    source_asset="USDC",
+    source_amount="100.00",
+    payout_method="MOBILE_MONEY",
+    beneficiary_id="ben_01J5K2M3N4P5Q6R7S8T9",
+)
+
+# 2. Commit the transaction
+transaction = client.transactions.commit(
+    quote_id=quote.quote_id,
+    beneficiary_id="ben_01J5K2M3N4P5Q6R7S8T9",
+    idempotency_key=str(uuid.uuid4()),
+)
+
+print(transaction.status)  # 'PROCESSING'
+```
+
+## Webhook verification helper
+
+```python
+from eqx.webhooks import verify_signature
+from flask import request, abort
+
+@app.route("/webhooks/eqx", methods=["POST"])
+def handle_webhook():
+    if not verify_signature(
+        request.get_data(),
+        request.headers.get("X-EQX-Signature"),
+        os.environ["EQX_WEBHOOK_SECRET"],
+    ):
+        abort(401)
+
+    event = request.json
+    # handle event...
+    return "", 200
+```

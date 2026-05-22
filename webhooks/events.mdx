@@ -1,0 +1,279 @@
+---
+title: Webhook Events
+description: Full event catalog with payload schemas
+---
+
+EQX emits 17 event types across four groups. Events marked **Active** are currently dispatched in production. Events marked **Planned** are documented for forward-compatibility and will be enabled in a future release.
+
+---
+
+## Retail Payout
+
+### `retail.transaction.committed` — Active
+
+Fired when a retail payout transaction is successfully committed from an accepted quote.
+
+```json
+{
+  "quote_id": "qt_01J5K2M3N4P5Q6R7S8T9",
+  "status": "PROCESSING",
+  "processing_mode": "AUTO",
+  "policy_reason_codes": []
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `quote_id` | string | The quote converted into this transaction |
+| `status` | string | Transaction status; typically `PROCESSING` |
+| `processing_mode` | string | `AUTO`, `REVIEW_REQUIRED`, or `MANUAL_ONLY` |
+| `policy_reason_codes` | string[] | Policy rule codes that influenced the mode |
+
+---
+
+### `retail.payout.dispatched` — Active
+
+Fired when the payout has been submitted to the external payout provider.
+
+```json
+{
+  "execution_id": "exec_01J5K2M3N4P5Q6R7S8T9",
+  "provider_reference": "MPESA_ABC123",
+  "provider_status": "PENDING"
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `execution_id` | string | Internal execution record ID |
+| `provider_reference` | string \| null | Provider-assigned transaction reference |
+| `provider_status` | string | Status string from the provider at dispatch |
+
+---
+
+### `retail.payout.completed` — Active
+
+Fired when the payout provider confirms successful delivery to the beneficiary.
+
+```json
+{
+  "execution_id": "exec_01J5K2M3N4P5Q6R7S8T9",
+  "provider_reference": "MPESA_ABC123",
+  "actual_consumed_amount": "100.00"
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `execution_id` | string | Internal execution record ID |
+| `provider_reference` | string | Provider-assigned transaction reference |
+| `actual_consumed_amount` | string | Actual source amount consumed (decimal) |
+
+---
+
+### `retail.payout.failed` — Active
+
+Fired when the payout reaches a terminal failure state.
+
+```json
+{
+  "execution_id": "exec_01J5K2M3N4P5Q6R7S8T9",
+  "reason_code": "BENEFICIARY_ACCOUNT_INVALID",
+  "provider_status": "FAILED"
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `execution_id` | string | Internal execution record ID |
+| `reason_code` | string | EQX-normalised failure reason code |
+| `provider_status` | string | Raw status string from the provider |
+
+---
+
+### `retail.payout.reconciliation_required` — Active
+
+Fired when the payout outcome is ambiguous and requires manual reconciliation.
+
+```json
+{
+  "execution_id": "exec_01J5K2M3N4P5Q6R7S8T9",
+  "provider_status": "TIMEOUT"
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `execution_id` | string | Internal execution record ID |
+| `provider_status` | string | Last known provider status |
+
+---
+
+## Settlement
+
+### `settlement.request.created` — Active
+
+Fired when a new settlement request is created for the integrator workspace.
+
+```json
+{
+  "settlement_rail": "MPESA",
+  "asset": "USDC",
+  "requested_amount": "100.00",
+  "status": "PENDING",
+  "processing_mode": "AUTO",
+  "policy_reason_codes": []
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `settlement_rail` | string | Payment rail (e.g. `MPESA`, `BANK_TRANSFER`) |
+| `asset` | string | Source asset being settled |
+| `requested_amount` | string | Amount requested (decimal) |
+| `status` | string | Initial status; typically `PENDING` |
+| `processing_mode` | string | `AUTO`, `REVIEW_REQUIRED`, or `MANUAL_ONLY` |
+| `policy_reason_codes` | string[] | Policy rule codes |
+
+---
+
+### `settlement.request.funded` — Planned
+
+Fired when the liquidity pool allocates funds to cover the settlement.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `settlement_request_id` | string | Settlement request ID |
+| `funded_amount` | string | Amount allocated (decimal) |
+| `liquidity_pool_id` | string | LP pool that funded this request |
+
+---
+
+### `settlement.request.executed` — Planned
+
+Fired when the settlement instruction is submitted to the rail.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `settlement_request_id` | string | Settlement request ID |
+| `provider_reference` | string \| null | Provider or rail reference |
+
+---
+
+### `settlement.request.completed` — Planned
+
+Fired when the settlement rail confirms final delivery.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `settlement_request_id` | string | Settlement request ID |
+| `completed_at` | string | ISO 8601 timestamp of confirmation |
+| `actual_settled_amount` | string | Final settled amount (decimal) |
+
+---
+
+### `settlement.request.failed` — Planned
+
+Fired when the settlement instruction fails terminally.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `settlement_request_id` | string | Settlement request ID |
+| `reason_code` | string | EQX-normalised failure reason code |
+
+---
+
+## Deposit
+
+### `deposit.received` — Planned
+
+Fired when an on-chain deposit is first detected (unconfirmed).
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `tx_hash` | string | On-chain transaction hash |
+| `asset` | string | Deposited asset (e.g. `USDC`) |
+| `amount` | string | Gross deposited amount (decimal) |
+| `network` | string | Blockchain network (e.g. `POLYGON`, `TRON`) |
+
+---
+
+### `deposit.confirmed` — Planned
+
+Fired when the deposit reaches required block confirmations.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `tx_hash` | string | On-chain transaction hash |
+| `confirmations` | number | Block confirmations at event time |
+
+---
+
+### `deposit.credited` — Active
+
+Fired when the deposit is processed and the net amount is credited to the user's balance. This is the primary event for confirming funds are available.
+
+```json
+{
+  "flow": "AUTOCONVERT",
+  "currency": "KES",
+  "net_amount": "13050.00",
+  "source": "ONCHAIN",
+  "external_reference": "0xabc123..."
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `flow` | string | `AUTOCONVERT`, `HOLD`, or `DIRECT_CREDIT` |
+| `currency` | string | Currency of credited amount (e.g. `KES`) |
+| `net_amount` | string | Net amount after fees (decimal) |
+| `source` | string | Source type; `ONCHAIN` |
+| `external_reference` | string \| null | On-chain transaction hash |
+
+---
+
+### `deposit.failed` — Planned
+
+Fired when deposit processing fails terminally.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `tx_hash` | string | On-chain transaction hash |
+| `reason_code` | string | EQX-normalised failure reason code |
+
+---
+
+## Customer Verification
+
+### `customer.verification.approved` — Planned
+
+Fired when a customer's KYC/KYB is approved.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `user_id` | string | EQX user ID |
+| `verification_level` | string | Tier achieved (e.g. `BASIC`, `ENHANCED`) |
+| `approved_at` | string | ISO 8601 approval timestamp |
+
+---
+
+### `customer.verification.rejected` — Planned
+
+Fired when a customer's KYC/KYB is rejected.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `user_id` | string | EQX user ID |
+| `reason_code` | string | EQX-normalised rejection reason code |
+
+---
+
+### `customer.verification.review_required` — Planned
+
+Fired when a customer's verification requires manual review.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `user_id` | string | EQX user ID |
+| `review_reason` | string | Reason the case was escalated |

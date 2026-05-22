@@ -1,0 +1,198 @@
+{
+  "$schema": "https://mintlify.com/schema.json",
+  "name": "EQX",
+  "logo": {
+    "dark": "/images/logo/logo-dark.svg",
+    "light": "/images/logo/logo-light.svg"
+  },
+  "favicon": "/images/favicon.svg",
+  "colors": {
+    "primary": "#E42313",
+    "light": "#FF6B35",
+    "dark": "#C41E0F",
+    "anchors": {
+      "from": "#E42313",
+      "to": "#FF6B35"
+    }
+  },
+  "topbarLinks": [
+    {
+      "name": "Support",
+      "url": "mailto:support@eqx.com"
+    }
+  ],
+  "topbarCtaButton": {
+    "name": "Dashboard",
+    "url": "https://app.eqx.com"
+  },
+  "tabs": [
+    {
+      "name": "API Reference",
+      "url": "api-reference"
+    },
+    {
+      "name": "Webhooks",
+      "url": "webhooks"
+    },
+    {
+      "name": "SDKs",
+      "url": "sdks"
+    }
+  ],
+  "anchors": [
+    {
+      "name": "API Reference",
+      "icon": "rectangle-terminal",
+      "url": "api-reference"
+    },
+    {
+      "name": "Webhooks",
+      "icon": "webhook",
+      "url": "webhooks"
+    },
+    {
+      "name": "SDKs",
+      "icon": "code",
+      "url": "sdks"
+    },
+    {
+      "name": "Status",
+      "icon": "signal",
+      "url": "https://status.eqx.com"
+    },
+    {
+      "name": "Community",
+      "icon": "slack",
+      "url": "https://eqx.com/community"
+    }
+  ],
+  "navigation": [
+    {
+      "group": "Get Started",
+      "pages": [
+        "introduction",
+        "quickstart",
+        "authentication"
+      ]
+    },
+    {
+      "group": "Concepts",
+      "pages": [
+        "concepts/settlements",
+        "concepts/balances",
+        "concepts/beneficiaries",
+        "concepts/off-ramp",
+        "concepts/autoconvert"
+      ]
+    },
+    {
+      "group": "Guides",
+      "pages": [
+        "errors"
+      ]
+    },
+    {
+      "group": "API Reference",
+      "pages": [
+        "api-reference/overview",
+        {
+          "group": "Offramp",
+          "pages": [
+            "api-reference/offramp/overview"
+          ]
+        },
+        {
+          "group": "Autoconvert",
+          "pages": [
+            "api-reference/autoconvert/overview"
+          ]
+        },
+        {
+          "group": "Onramp",
+          "pages": [
+            "api-reference/onramp/overview"
+          ]
+        },
+        {
+          "group": "Beneficiaries",
+          "pages": [
+            "api-reference/beneficiaries/overview"
+          ]
+        },
+        {
+          "group": "Markets",
+          "pages": [
+            "api-reference/markets/overview"
+          ]
+        },
+        {
+          "group": "Partners",
+          "pages": [
+            "api-reference/partners/overview"
+          ]
+        },
+        {
+          "group": "Partners Funding",
+          "pages": [
+            "api-reference/partners-funding/overview"
+          ]
+        }
+      ]
+    },
+    {
+      "group": "Webhooks",
+      "pages": [
+        "webhooks/overview",
+        "webhooks/events"
+      ]
+    },
+    {
+      "group": "SDKs",
+      "pages": [
+        "sdks/overview",
+        "sdks/typescript",
+        "sdks/python",
+        "sdks/php"
+      ]
+    },
+    {
+      "group": "AI Integrations",
+      "pages": [
+        "ai-integrations"
+      ]
+    }
+  ],
+  "openapi": ["/api-reference/openapi.json"],
+  "api": {
+    "baseUrl": "https://api.eqx.com",
+    "auth": {
+      "method": "bearer"
+    },
+    "languages": ["curl", "typescript", "python", "php", "go"]
+  },
+  "mcp": {
+    "enabled": true
+  },
+  "llmsTxt": {
+    "enabled": true
+  },
+  "versions": [
+    { "name": "v2.5", "default": true }
+  ],
+  "locales": [
+    { "name": "en", "default": true },
+    { "name": "fr" },
+    { "name": "sw" }
+  ],
+  "modeToggle": {
+    "default": "system",
+    "isHidden": false
+  },
+  "theme": "venus",
+  "footer": {
+    "socials": {
+      "twitter": "https://twitter.com/eqxhq",
+      "linkedin": "https://linkedin.com/company/eqxhq"
+    }
+  }
+}
