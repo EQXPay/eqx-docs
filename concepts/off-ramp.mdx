@@ -46,6 +46,14 @@ PROCESSING → DISPATCHED → COMPLETED
 | `FAILED` | Terminal failure |
 | `RECONCILIATION_REQUIRED` | Provider response is ambiguous; manual review needed |
 
+## Reliability expectations
+
+EQX is designed, monitored, and operated to get as close to a **100% successful payout rate** as possible. We validate requests before dispatch, reserve liquidity before execution, use idempotency for safe retries, and reconcile ambiguous provider responses instead of silently dropping them.
+
+Some payout outcomes still depend on external bank, mobile money, switch, and provider systems. A transaction can be delayed, rejected, reversed, or marked for reconciliation because of beneficiary account issues, network downtime, provider limits, compliance checks, or responses returned by the receiving institution.
+
+Always use the transaction status endpoint and webhooks as the source of truth for final payout state. Treat `COMPLETED` as successful delivery, `FAILED` as terminal failure, and `RECONCILIATION_REQUIRED` as an operational review state until EQX confirms the final outcome.
+
 ## Pagination
 
 `GET /api/transactions` supports offset pagination via `page` and `per_page` query parameters. Default page size is 20; maximum is 100.
