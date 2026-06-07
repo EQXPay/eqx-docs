@@ -1,0 +1,24 @@
+---
+title: Deposits
+description: On-chain deposit addresses and deposit history
+---
+
+The Deposits API lets you provision custody deposit addresses for users and list their on-chain deposit history.
+
+## Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/v1/api/deposit-addresses` | List deposit addresses for the authenticated user |
+| `POST` | `/v1/api/deposit-addresses` | Provision a new deposit address |
+| `GET` | `/v1/api/deposits` | List deposits for the authenticated user |
+
+## Deposit statuses
+
+| Status | Meaning |
+|--------|---------|
+| `DETECTED` | On-chain deposit seen, awaiting confirmations |
+| `CONFIRMED` | Block confirmations reached |
+| `PROCESSING` | Being credited to ledger balance |
+| `CREDITED` | Successfully credited |
+| `FAILED` | Processing failed |

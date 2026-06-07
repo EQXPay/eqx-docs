@@ -1,0 +1,31 @@
+---
+title: Auth
+description: Authentication, 2FA, token management, and user registration
+---
+
+The Auth API handles the full authentication lifecycle — login with email OTP or Google Authenticator, token refresh, logout, and new user registration.
+
+## Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/v1/api/auth/register` | Register a new user |
+| `POST` | `/v1/api/auth/login` | Authenticate a user and create a second-factor challenge |
+| `POST` | `/v1/api/auth/otp` | Request an email OTP |
+| `POST` | `/v1/api/auth/otp/verify` | Verify an email OTP and receive tokens |
+| `POST` | `/v1/api/auth/login/otp/verify` | Verify an email login OTP and receive tokens |
+| `POST` | `/v1/api/auth/login/authenticator/verify` | Verify a Google Authenticator login code and receive tokens |
+| `POST` | `/v1/api/auth/2fa/authenticator/setup` | Start Google Authenticator setup |
+| `POST` | `/v1/api/auth/2fa/authenticator/enable` | Enable Google Authenticator after verifying the first code |
+| `POST` | `/v1/api/auth/refresh` | Refresh access token using a refresh token |
+| `POST` | `/v1/api/auth/logout` | Revoke a refresh token |
+
+## Token flow
+
+1. `POST /v1/api/auth/login` — returns a challenge type (`otp` or `authenticator`).
+2. Complete the challenge with the matching verify endpoint.
+3. Store the returned `access_token` (short-lived) and `refresh_token` (long-lived).
+4. Call `POST /v1/api/auth/refresh` to obtain a new access token before expiry.
+5. Call `POST /v1/api/auth/logout` to invalidate the refresh token on sign-out.
+
+See [Authentication](/authentication) for how to attach tokens to API requests.

@@ -1,9 +1,8 @@
 {
   "openapi": "3.0.0",
   "paths": {
-    "/api/routes": {
+    "/v1/api/routes": {
       "get": {
-        "description": "Returns the off-ramp corridors available to the authenticated user, filtered to their eligible markets.",
         "operationId": "RetailOfframpController_getRoutes",
         "parameters": [],
         "responses": {
@@ -28,9 +27,8 @@
         ]
       }
     },
-    "/api/transactions": {
+    "/v1/api/transactions": {
       "get": {
-        "description": "Returns a paginated list of payout transactions. Supports offset pagination via `page` and `per_page` query parameters.",
         "operationId": "RetailOfframpController_listTransactions",
         "parameters": [],
         "responses": {
@@ -55,9 +53,8 @@
         ]
       }
     },
-    "/api/quotes": {
+    "/v1/api/quotes": {
       "post": {
-        "description": "Generates a locked off-ramp quote for the specified corridor and amount. Quotes expire after a short window (typically 60–120 seconds). Use the returned `quote_id` to commit the transaction.",
         "operationId": "RetailOfframpController_createQuote",
         "parameters": [],
         "requestBody": {
@@ -95,9 +92,8 @@
         ]
       }
     },
-    "/api/transactions/commit": {
+    "/v1/api/transactions/commit": {
       "post": {
-        "description": "Converts a locked quote into a live payout transaction. Requires an `Idempotency-Key` header to prevent duplicate submissions. The beneficiary receives the fiat amount once the payout provider confirms settlement.",
         "operationId": "RetailOfframpController_commitTransaction",
         "parameters": [],
         "requestBody": {
@@ -135,9 +131,8 @@
         ]
       }
     },
-    "/api/transactions/{transactionId}": {
+    "/v1/api/transactions/{transactionId}": {
       "get": {
-        "description": "Returns the full status and metadata for a single payout transaction, including payout provider reference and settlement timestamps.",
         "operationId": "RetailOfframpController_getTransactionDetail",
         "parameters": [
           {
@@ -175,374 +170,8 @@
         ]
       }
     },
-    "/api/partner/account": {
+    "/v1/api/autoconvert/me": {
       "get": {
-        "description": "Returns the partner account record for the authenticated user's active workspace, including account status and configuration.",
-        "operationId": "PartnerController_getPartnerAccount",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "401": {
-            "description": "Unauthorized"
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Get the authenticated partner account",
-        "tags": [
-          "Partners"
-        ],
-        "x-eqx-audience": [
-          "integrator"
-        ]
-      }
-    },
-    "/api/partner/memberships": {
-      "get": {
-        "description": "Returns all team members currently active on the authenticated user's partner account.",
-        "operationId": "PartnerController_listMemberships",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "401": {
-            "description": "Unauthorized"
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "List memberships for the authenticated user",
-        "tags": [
-          "Partners"
-        ],
-        "x-eqx-audience": [
-          "integrator"
-        ]
-      },
-      "post": {
-        "description": "Adds an existing EQX user to the partner account team. The user must already hold an EQX account.",
-        "operationId": "PartnerController_createMembership",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateMembershipDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Created"
-          },
-          "400": {
-            "description": "Bad request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Add a member to the partner account",
-        "tags": [
-          "Partners"
-        ],
-        "x-eqx-audience": [
-          "integrator"
-        ]
-      }
-    },
-    "/api/partner/memberships/{membershipId}": {
-      "patch": {
-        "description": "Changes the role of an existing team member. Use this to promote or restrict access without removing and re-adding the member.",
-        "operationId": "PartnerController_updateMembership",
-        "parameters": [
-          {
-            "name": "membershipId",
-            "required": true,
-            "in": "path",
-            "description": "Membership record ID",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateMembershipDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "400": {
-            "description": "Bad request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not found"
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Update the role of a partner account member",
-        "tags": [
-          "Partners"
-        ],
-        "x-eqx-audience": [
-          "integrator"
-        ]
-      },
-      "delete": {
-        "description": "Removes a team member from the partner account. Access is revoked immediately.",
-        "operationId": "PartnerController_removeMembership",
-        "parameters": [
-          {
-            "name": "membershipId",
-            "required": true,
-            "in": "path",
-            "description": "Membership record ID",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not found"
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Remove a member from the partner account",
-        "tags": [
-          "Partners"
-        ],
-        "x-eqx-audience": [
-          "integrator"
-        ]
-      }
-    },
-    "/api/partner/invitations": {
-      "get": {
-        "description": "Returns all open invitations sent from the authenticated partner account that have not yet been accepted or cancelled.",
-        "operationId": "PartnerController_listPendingInvitations",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "401": {
-            "description": "Unauthorized"
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "List pending invitations for the partner account",
-        "tags": [
-          "Partners"
-        ],
-        "x-eqx-audience": [
-          "integrator"
-        ]
-      },
-      "post": {
-        "description": "Sends an email invitation to a new user to join the partner account team with the specified role.",
-        "operationId": "PartnerController_createInvitation",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateInvitationDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Created"
-          },
-          "400": {
-            "description": "Bad request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Send an invitation to join the partner account",
-        "tags": [
-          "Partners"
-        ],
-        "x-eqx-audience": [
-          "integrator"
-        ]
-      }
-    },
-    "/api/partner/invitations/{invitationId}/accept": {
-      "post": {
-        "description": "Accepts a pending invitation, granting the authenticated user access to the inviting partner account under the assigned role.",
-        "operationId": "PartnerController_acceptInvitation",
-        "parameters": [
-          {
-            "name": "invitationId",
-            "required": true,
-            "in": "path",
-            "description": "Invitation ID",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not found"
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Accept a partner account invitation",
-        "tags": [
-          "Partners"
-        ],
-        "x-eqx-audience": [
-          "integrator"
-        ]
-      }
-    },
-    "/api/partner/invitations/{invitationId}/cancel": {
-      "post": {
-        "description": "Cancels an open invitation before it is accepted. The invitation link becomes invalid immediately.",
-        "operationId": "PartnerController_cancelInvitation",
-        "parameters": [
-          {
-            "name": "invitationId",
-            "required": true,
-            "in": "path",
-            "description": "Invitation ID",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not found"
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Cancel a pending partner account invitation",
-        "tags": [
-          "Partners"
-        ],
-        "x-eqx-audience": [
-          "integrator"
-        ]
-      }
-    },
-    "/api/integrator/float": {
-      "get": {
-        "description": "Returns the pre-funded float balances held in the integrator workspace. Optionally filter by `currency` (e.g. `KES`, `NGN`) to retrieve a single balance.",
-        "operationId": "IntegratorFundingController_getIntegratorFloat",
-        "parameters": [
-          {
-            "name": "currency",
-            "required": false,
-            "in": "query",
-            "description": "Filter by currency code",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "401": {
-            "description": "Unauthorized"
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Get integrator float balances for the authenticated integrator workspace",
-        "tags": [
-          "Partners Funding"
-        ],
-        "x-eqx-audience": [
-          "integrator"
-        ]
-      }
-    },
-    "/api/autoconvert/me": {
-      "get": {
-        "description": "Returns the autoconvert configuration and current status for the authenticated user. Autoconvert automatically converts incoming on-chain deposits to fiat via a configured corridor.",
         "operationId": "AutoconvertController_getAutoconvertSummary",
         "parameters": [],
         "responses": {
@@ -567,9 +196,8 @@
         ]
       }
     },
-    "/api/autoconvert/credits": {
+    "/v1/api/autoconvert/credits": {
       "get": {
-        "description": "Returns the list of autoconvert credit events attributed to the authenticated user. Each credit represents a successful conversion from crypto to fiat.",
         "operationId": "AutoconvertController_listCredits",
         "parameters": [],
         "responses": {
@@ -594,9 +222,8 @@
         ]
       }
     },
-    "/api/autoconvert/credits/{creditId}": {
+    "/v1/api/autoconvert/credits/{creditId}": {
       "get": {
-        "description": "Returns the detail of a single autoconvert credit event, including the source amount, converted fiat amount, rate used, and settlement status.",
         "operationId": "AutoconvertController_getCredit",
         "parameters": [
           {
@@ -634,9 +261,8 @@
         ]
       }
     },
-    "/api/beneficiaries": {
+    "/v1/api/beneficiaries": {
       "post": {
-        "description": "Creates a new payout beneficiary for the authenticated user. A beneficiary represents a bank account or mobile money number that can receive off-ramp funds. Must be created before it can be referenced in a quote.",
         "operationId": "BeneficiaryController_createBeneficiary",
         "parameters": [],
         "responses": {
@@ -664,7 +290,6 @@
         ]
       },
       "get": {
-        "description": "Returns all active payout beneficiaries linked to the authenticated user.",
         "operationId": "BeneficiaryController_listBeneficiaries",
         "parameters": [],
         "responses": {
@@ -689,9 +314,8 @@
         ]
       }
     },
-    "/api/beneficiaries/{beneficiaryId}": {
+    "/v1/api/beneficiaries/{beneficiaryId}": {
       "get": {
-        "description": "Returns a single beneficiary. Returns 404 if the beneficiary does not belong to the authenticated user.",
         "operationId": "BeneficiaryController_getBeneficiary",
         "parameters": [
           {
@@ -729,7 +353,6 @@
         ]
       },
       "patch": {
-        "description": "Updates the account details or provider for an existing beneficiary. The payout method cannot be changed — create a new beneficiary instead.",
         "operationId": "BeneficiaryController_updateBeneficiary",
         "parameters": [
           {
@@ -770,7 +393,6 @@
         ]
       },
       "delete": {
-        "description": "Soft-deletes a beneficiary. Deactivated beneficiaries are excluded from list responses and cannot be used in new quotes.",
         "operationId": "BeneficiaryController_deactivateBeneficiary",
         "parameters": [
           {
@@ -808,9 +430,78 @@
         ]
       }
     },
-    "/api/markets/routes": {
+    "/v1/api/deposit-addresses": {
+      "post": {
+        "operationId": "DepositsController_provisionAddress",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Provision a deposit address for the authenticated user",
+        "tags": [
+          "Deposits"
+        ]
+      },
       "get": {
-        "description": "Returns all active off-ramp corridors (market + payout rail combinations) available to the integrator. Use these to populate corridor selectors in your UI.",
+        "operationId": "DepositsController_listDepositAddresses",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List deposit addresses for the authenticated user",
+        "tags": [
+          "Deposits"
+        ]
+      }
+    },
+    "/v1/api/deposits": {
+      "get": {
+        "operationId": "DepositsController_listDeposits",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List deposits for the authenticated user",
+        "tags": [
+          "Deposits"
+        ]
+      }
+    },
+    "/v1/api/markets/routes": {
+      "get": {
         "operationId": "MarketsController_listSupportedRetailRoutes",
         "parameters": [],
         "responses": {
@@ -835,9 +526,8 @@
         ]
       }
     },
-    "/api/markets/sources": {
+    "/v1/api/markets/sources": {
       "get": {
-        "description": "Returns the price data providers currently used to generate rates for each corridor.",
         "operationId": "MarketsController_listActiveSources",
         "parameters": [],
         "responses": {
@@ -862,9 +552,8 @@
         ]
       }
     },
-    "/api/markets/rates": {
+    "/v1/api/markets/rates": {
       "get": {
-        "description": "Returns the current indicative exchange rates for all active corridors. Suitable for displaying live rates to end users before initiating a quote.",
         "operationId": "MarketsController_listRates",
         "parameters": [],
         "responses": {
@@ -889,9 +578,8 @@
         ]
       }
     },
-    "/api/markets/resolve-rate": {
+    "/v1/api/markets/resolve-rate": {
       "post": {
-        "description": "Locks and returns the current off-ramp rate for a specific corridor. The returned rate is valid for a short window and can be passed directly into a quote request.",
         "operationId": "MarketsController_resolveRetailRate",
         "parameters": [],
         "responses": {
@@ -919,9 +607,587 @@
         ]
       }
     },
-    "/api/inbound-funding": {
+    "/v1/collections/markets": {
       "get": {
-        "description": "Returns on-chain inbound funding events (deposits) detected for the authenticated user. Each event represents a blockchain transaction crediting the custody address, with processing status and attributed amounts.",
+        "operationId": "CollectionsDiscoveryController_listMarkets",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MarketResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List markets available to the calling integrator",
+        "tags": [
+          "Collections Discovery"
+        ]
+      }
+    },
+    "/v1/collections/{market}/rails": {
+      "get": {
+        "operationId": "CollectionsDiscoveryController_listRails",
+        "parameters": [
+          {
+            "name": "market",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "example": "MW",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RailResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Market not found or not accessible"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List active rails for a market",
+        "tags": [
+          "Collections Discovery"
+        ]
+      }
+    },
+    "/v1/collections/{market}/rails/{rail}": {
+      "get": {
+        "operationId": "CollectionsDiscoveryController_getRailCapability",
+        "parameters": [
+          {
+            "name": "market",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "example": "MW",
+              "type": "string"
+            }
+          },
+          {
+            "name": "rail",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "example": "mobile_money",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RailCapabilityResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Rail not found or not accessible"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get capability document for a specific rail",
+        "tags": [
+          "Collections Discovery"
+        ]
+      },
+      "post": {
+        "operationId": "CollectionsController_createCollection",
+        "parameters": [
+          {
+            "name": "market",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "example": "MW",
+              "type": "string"
+            }
+          },
+          {
+            "name": "rail",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "example": "mobile_money",
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "Required; prevents duplicate charges on retry",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCollectionRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid market, rail, or customer fields"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Missing Idempotency-Key or amount out of range"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a new collection (initiate inbound payment)",
+        "tags": [
+          "Collections"
+        ]
+      }
+    },
+    "/v1/collections": {
+      "get": {
+        "operationId": "CollectionsController_listCollections",
+        "parameters": [
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "created",
+                "pending",
+                "processing",
+                "successful",
+                "failed",
+                "expired",
+                "refunded",
+                "reversed"
+              ]
+            }
+          },
+          {
+            "name": "from_date",
+            "required": false,
+            "in": "query",
+            "description": "ISO 8601 date string",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to_date",
+            "required": false,
+            "in": "query",
+            "description": "ISO 8601 date string",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "reference",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "after",
+            "required": false,
+            "in": "query",
+            "description": "Cursor for next page",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "example": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List collections for the authenticated integrator",
+        "tags": [
+          "Collections"
+        ]
+      }
+    },
+    "/v1/collections/{id}": {
+      "get": {
+        "operationId": "CollectionsController_getCollection",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Collection UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Collection not found or not owned by integrator"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get a single collection by ID",
+        "tags": [
+          "Collections"
+        ]
+      }
+    },
+    "/v1/checkout/sessions": {
+      "post": {
+        "operationId": "CheckoutSessionsController_createSession",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCheckoutSessionRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckoutSessionResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid market or currency mismatch"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a hosted checkout session",
+        "tags": [
+          "Checkout"
+        ]
+      }
+    },
+    "/v1/checkout/sessions/by-token/{token}": {
+      "get": {
+        "operationId": "CheckoutSessionsController_getSessionByToken",
+        "parameters": [
+          {
+            "name": "token",
+            "required": true,
+            "in": "path",
+            "description": "Opaque checkout session token from the checkout URL",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckoutSessionPublicResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Session not found or expired"
+          }
+        },
+        "summary": "Get public session data for the checkout page (no auth required)",
+        "tags": [
+          "Checkout"
+        ]
+      }
+    },
+    "/v1/checkout/sessions/by-token/{token}/submit": {
+      "post": {
+        "operationId": "CheckoutSessionsController_submitSession",
+        "parameters": [
+          {
+            "name": "X-Checkout-Token",
+            "in": "header",
+            "description": "Session token from checkout URL",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "token",
+            "required": true,
+            "in": "path",
+            "description": "Opaque checkout session token",
+            "schema": {}
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitCheckoutSessionRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitCheckoutSessionResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid checkout token"
+          },
+          "410": {
+            "description": "Session has expired"
+          },
+          "422": {
+            "description": "Session already used (double-bind)"
+          }
+        },
+        "summary": "Submit payment through the hosted checkout page",
+        "tags": [
+          "Checkout"
+        ]
+      }
+    },
+    "/v1/checkout/sessions/{id}": {
+      "get": {
+        "operationId": "CheckoutSessionsController_getSessionById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Checkout session UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckoutSessionResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Session not found or not owned by integrator"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get a checkout session by ID (integrator-scoped)",
+        "tags": [
+          "Checkout"
+        ]
+      }
+    },
+    "/v1/collections/{id}/refund": {
+      "post": {
+        "operationId": "CollectionsRefundController_refundCollection",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Collection UUID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "Required; prevents duplicate refunds on retry",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRefundRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RefundResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Collection not found"
+          },
+          "422": {
+            "description": "Refund not allowed \u2014 wrong collection state, rail does not support refunds, insufficient balance, or partial refund attempted"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Refund a completed collection",
+        "tags": [
+          "Collections"
+        ]
+      }
+    },
+    "/v1/api/inbound-funding": {
+      "get": {
         "operationId": "OnrampController_listInboundFunding",
         "parameters": [],
         "responses": {
@@ -943,6 +1209,395 @@
         ],
         "x-eqx-audience": [
           "integrator"
+        ]
+      }
+    },
+    "/v1/api/risk/signals/open": {
+      "get": {
+        "operationId": "RiskController_listOpenSignals",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List open risk signals for the authenticated actor",
+        "tags": [
+          "Risk"
+        ]
+      }
+    },
+    "/v1/api/risk/signals/{signalId}": {
+      "get": {
+        "operationId": "RiskController_getSignal",
+        "parameters": [
+          {
+            "name": "signalId",
+            "required": true,
+            "in": "path",
+            "description": "Risk signal ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get a risk signal by id",
+        "tags": [
+          "Risk"
+        ]
+      }
+    },
+    "/v1/api/risk/signals": {
+      "post": {
+        "operationId": "RiskController_createSignal",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a risk signal",
+        "tags": [
+          "Risk"
+        ]
+      }
+    },
+    "/v1/api/auth/register": {
+      "post": {
+        "operationId": "AuthController_register",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User registered successfully"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "409": {
+            "description": "Email already registered"
+          }
+        },
+        "summary": "Register a new user",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/v1/api/auth/login": {
+      "post": {
+        "operationId": "AuthController_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Second-factor challenge created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Invalid credentials"
+          }
+        },
+        "summary": "Authenticate a user and create a second-factor challenge",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/v1/api/auth/2fa/authenticator/setup": {
+      "post": {
+        "operationId": "AuthController_setupAuthenticator",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "Authenticator setup secret created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "409": {
+            "description": "Authenticator already enabled"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Start Google Authenticator setup for the authenticated user",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/v1/api/auth/2fa/authenticator/enable": {
+      "post": {
+        "operationId": "AuthController_enableAuthenticator",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EnableAuthenticatorDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Authenticator enabled"
+          },
+          "400": {
+            "description": "Authenticator setup has not been started"
+          },
+          "401": {
+            "description": "Unauthorized or invalid authenticator code"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Enable Google Authenticator after verifying the first code",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/v1/api/auth/refresh": {
+      "post": {
+        "operationId": "AuthController_refresh",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshTokenDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Token refreshed successfully"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Invalid or expired refresh token"
+          }
+        },
+        "summary": "Refresh access token using a refresh token",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/v1/api/auth/logout": {
+      "post": {
+        "operationId": "AuthController_logout",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshTokenDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Logout successful"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "summary": "Revoke a refresh token",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/v1/api/auth/otp": {
+      "post": {
+        "operationId": "AuthController_requestOtp",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestOtpDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "OTP challenge created"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "summary": "Request an OTP for a user",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/v1/api/auth/login/otp/verify": {
+      "post": {
+        "operationId": "AuthController_verifyEmailLoginOtp",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyOtpDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login OTP verified successfully"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Invalid, expired, or already consumed OTP"
+          }
+        },
+        "summary": "Verify an email login OTP and receive tokens",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/v1/api/auth/login/authenticator/verify": {
+      "post": {
+        "operationId": "AuthController_verifyAuthenticatorLogin",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyOtpDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authenticator code verified successfully"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Invalid, expired, or already consumed challenge"
+          }
+        },
+        "summary": "Verify a Google Authenticator login code and receive tokens",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/v1/api/auth/otp/verify": {
+      "post": {
+        "operationId": "AuthController_verifyOtp",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyOtpDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login OTP verified successfully"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Invalid, expired, or already consumed OTP"
+          }
+        },
+        "summary": "Verify an email login OTP and receive tokens",
+        "tags": [
+          "Auth"
         ]
       }
     }
@@ -975,18 +1630,15 @@
         "properties": {
           "market": {
             "type": "string",
-            "description": "Market code for the offramp corridor (e.g. KE, NG)",
-            "example": "KE"
+            "description": "Market code for the offramp corridor (e.g. KE, NG)"
           },
           "source_asset": {
             "type": "string",
-            "description": "Source crypto asset symbol (e.g. USDC, USDT)",
-            "example": "USDC"
+            "description": "Source crypto asset symbol (e.g. USDC, USDT)"
           },
           "source_amount": {
             "type": "string",
-            "description": "Amount of source asset to convert (decimal string)",
-            "example": "100.00"
+            "description": "Amount of source asset to convert (decimal string)"
           },
           "payout_method": {
             "type": "string",
@@ -994,13 +1646,11 @@
               "MOBILE_MONEY",
               "BANK_TRANSFER"
             ],
-            "description": "Payout method",
-            "example": "MOBILE_MONEY"
+            "description": "Payout method"
           },
           "beneficiary_id": {
             "type": "string",
-            "description": "Beneficiary ID to receive the payout",
-            "example": "ben_01J5K2M3N4P5Q6R7S8T9"
+            "description": "Beneficiary ID to receive the payout"
           },
           "sortField": {
             "type": "string"
@@ -1019,18 +1669,15 @@
         "properties": {
           "quote_id": {
             "type": "string",
-            "description": "Quote ID to commit into a transaction",
-            "example": "qt_01J5K2M3N4P5Q6R7S8T9"
+            "description": "Quote ID to commit into a transaction"
           },
           "beneficiary_id": {
             "type": "string",
-            "description": "Beneficiary ID to receive the payout",
-            "example": "ben_01J5K2M3N4P5Q6R7S8T9"
+            "description": "Beneficiary ID to receive the payout"
           },
           "otp_token": {
             "type": "string",
-            "description": "OTP token for step-up authentication if required",
-            "example": "123456"
+            "description": "OTP token for step-up authentication if required"
           }
         },
         "required": [
@@ -1043,13 +1690,11 @@
         "properties": {
           "user_id": {
             "type": "string",
-            "description": "User ID to add as a member",
-            "example": "usr_01J5K2M3N4P5Q6R7S8T9"
+            "description": "User ID to add as a member"
           },
           "role": {
             "type": "string",
-            "description": "Role to assign to the member",
-            "example": "DEVELOPER"
+            "description": "Role to assign to the member"
           }
         },
         "required": [
@@ -1062,8 +1707,7 @@
         "properties": {
           "role": {
             "type": "string",
-            "description": "New role to assign to the member",
-            "example": "VIEWER"
+            "description": "New role to assign to the member"
           }
         },
         "required": [
@@ -1075,18 +1719,15 @@
         "properties": {
           "email": {
             "type": "string",
-            "description": "Email address of the invitee",
-            "example": "dev@company.com"
+            "description": "Email address of the invitee"
           },
           "role": {
             "type": "string",
-            "description": "Role to assign upon acceptance",
-            "example": "DEVELOPER"
+            "description": "Role to assign upon acceptance"
           },
           "expires_at": {
             "type": "string",
-            "description": "ISO 8601 expiry timestamp for the invitation",
-            "example": "2026-06-30T00:00:00.000Z"
+            "description": "ISO 8601 expiry timestamp for the invitation"
           }
         },
         "required": [
@@ -1422,6 +2063,771 @@
         },
         "required": [
           "updates"
+        ]
+      },
+      "MarketResponseDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "MW"
+          },
+          "name": {
+            "type": "string",
+            "example": "Malawi"
+          },
+          "currency": {
+            "type": "string",
+            "example": "MWK"
+          }
+        },
+        "required": [
+          "code",
+          "name",
+          "currency"
+        ]
+      },
+      "RailResponseDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "mobile_money"
+          },
+          "name": {
+            "type": "string",
+            "example": "Mobile Money"
+          },
+          "market": {
+            "type": "string",
+            "example": "MW"
+          }
+        },
+        "required": [
+          "code",
+          "name",
+          "market"
+        ]
+      },
+      "RailCapabilityResponseDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "mobile_money"
+          },
+          "market": {
+            "type": "string",
+            "example": "MW"
+          },
+          "currency": {
+            "type": "string",
+            "example": "MWK"
+          },
+          "min_amount": {
+            "type": "number",
+            "example": 100
+          },
+          "max_amount": {
+            "type": "number",
+            "example": 5000000
+          },
+          "supports_refunds": {
+            "type": "boolean",
+            "example": true
+          },
+          "supports_async": {
+            "type": "boolean",
+            "example": false
+          },
+          "settlement_time": {
+            "type": "string",
+            "example": "instant",
+            "description": "instant when same-day, T+N for deferred settlement (e.g. T+1)"
+          },
+          "customer_fields": {
+            "example": [
+              "phone_number"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "providers": {
+            "example": [
+              "airtel_money",
+              "tnm_mpamba"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "supported_flows": {
+            "example": [
+              "collection"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "code",
+          "market",
+          "currency",
+          "min_amount",
+          "max_amount",
+          "supports_refunds",
+          "supports_async",
+          "settlement_time",
+          "customer_fields",
+          "providers",
+          "supported_flows"
+        ]
+      },
+      "CreateCollectionRequestDto": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "example": 5000,
+            "description": "Amount in minor currency units (e.g. MWK tambala)"
+          },
+          "currency": {
+            "type": "string",
+            "example": "MWK"
+          },
+          "reference": {
+            "type": "string",
+            "example": "INV-2026-001",
+            "description": "Integrator reconciliation reference"
+          },
+          "customer": {
+            "type": "object",
+            "example": {
+              "phone_number": "+265991234567"
+            },
+            "description": "Rail-required customer fields"
+          },
+          "metadata": {
+            "type": "object",
+            "example": {
+              "order_id": "ORD-123"
+            },
+            "description": "Arbitrary integrator metadata preserved in all webhook payloads"
+          }
+        },
+        "required": [
+          "amount",
+          "currency",
+          "reference",
+          "customer"
+        ]
+      },
+      "CollectionResponseDto": {
+        "type": "object",
+        "properties": {
+          "collection_id": {
+            "type": "string",
+            "example": "e3d4b5c6-..."
+          },
+          "integrator_id": {
+            "type": "string",
+            "example": "f1a2b3c4-..."
+          },
+          "market": {
+            "type": "string",
+            "example": "MW"
+          },
+          "rail": {
+            "type": "string",
+            "example": "mobile_money"
+          },
+          "amount": {
+            "type": "number",
+            "example": 5000
+          },
+          "currency": {
+            "type": "string",
+            "example": "MWK"
+          },
+          "reference": {
+            "type": "string",
+            "example": "INV-2026-001"
+          },
+          "status": {
+            "type": "string",
+            "example": "pending",
+            "description": "Canonical status: created | pending | processing | successful | failed | expired | refunded | reversed"
+          },
+          "customer": {
+            "type": "object",
+            "example": {
+              "phone_number": "+265991234567"
+            }
+          },
+          "metadata": {
+            "type": "object",
+            "example": {
+              "order_id": "ORD-123"
+            }
+          },
+          "payment_instruction": {
+            "type": "object",
+            "description": "Provider payment instruction (e.g. USSD string, STK reference); null when provider is purely async",
+            "example": null
+          },
+          "created_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "expires_at": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "collection_id",
+          "integrator_id",
+          "market",
+          "rail",
+          "amount",
+          "currency",
+          "reference",
+          "status",
+          "customer",
+          "created_at",
+          "updated_at",
+          "expires_at"
+        ]
+      },
+      "CreateCheckoutSessionRequestDto": {
+        "type": "object",
+        "properties": {
+          "market": {
+            "type": "string",
+            "example": "MW",
+            "description": "Market code (e.g. MW for Malawi)"
+          },
+          "amount": {
+            "type": "number",
+            "example": 5000,
+            "description": "Amount in minor currency units (e.g. MWK tambala)"
+          },
+          "currency": {
+            "type": "string",
+            "example": "MWK"
+          },
+          "reference": {
+            "type": "string",
+            "example": "INV-2026-001",
+            "description": "Integrator reconciliation reference"
+          },
+          "description": {
+            "type": "string",
+            "example": "Payment for Order #123",
+            "description": "Human-readable description shown on checkout page"
+          },
+          "metadata": {
+            "type": "object",
+            "example": {
+              "order_id": "ORD-123"
+            },
+            "description": "Arbitrary metadata forwarded to the bound collection"
+          },
+          "success_url": {
+            "type": "string",
+            "example": "https://shop.example.com/checkout/success"
+          },
+          "cancel_url": {
+            "type": "string",
+            "example": "https://shop.example.com/checkout/cancel"
+          },
+          "logo_url": {
+            "type": "string",
+            "example": "https://cdn.example.com/logo.png",
+            "description": "HTTPS URL to the integrator logo shown on the checkout page"
+          },
+          "primary_color": {
+            "type": "string",
+            "example": "#FF5733",
+            "description": "Hex color override for the checkout card primary accent (e.g. #FF5733)"
+          }
+        },
+        "required": [
+          "market",
+          "amount",
+          "currency",
+          "reference",
+          "success_url"
+        ]
+      },
+      "CheckoutSessionResponseDto": {
+        "type": "object",
+        "properties": {
+          "session_id": {
+            "type": "string",
+            "example": "e3d4b5c6-..."
+          },
+          "integrator_id": {
+            "type": "string",
+            "example": "f1a2b3c4-..."
+          },
+          "market": {
+            "type": "string",
+            "example": "MW"
+          },
+          "amount": {
+            "type": "number",
+            "example": 5000
+          },
+          "currency": {
+            "type": "string",
+            "example": "MWK"
+          },
+          "reference": {
+            "type": "string",
+            "example": "INV-2026-001"
+          },
+          "description": {
+            "type": "object",
+            "example": "Payment for Order #123",
+            "nullable": true
+          },
+          "metadata": {
+            "type": "object",
+            "example": {
+              "order_id": "ORD-123"
+            },
+            "nullable": true
+          },
+          "success_url": {
+            "type": "string",
+            "example": "https://shop.example.com/checkout/success"
+          },
+          "cancel_url": {
+            "type": "object",
+            "example": "https://shop.example.com/checkout/cancel",
+            "nullable": true
+          },
+          "merchant_name": {
+            "type": "object",
+            "example": "Acme Corp",
+            "nullable": true,
+            "description": "Snapshotted from partner account display name at session creation"
+          },
+          "logo_url": {
+            "type": "object",
+            "example": "https://cdn.example.com/logo.png",
+            "nullable": true
+          },
+          "primary_color": {
+            "type": "object",
+            "example": "#FF5733",
+            "nullable": true
+          },
+          "market_name": {
+            "type": "object",
+            "example": "Malawi",
+            "nullable": true
+          },
+          "session_token": {
+            "type": "string",
+            "example": "a1b2c3d4e5f6...",
+            "description": "Opaque checkout session token (64 hex chars)"
+          },
+          "checkout_url": {
+            "type": "string",
+            "example": "https://checkout.eqx.io/a1b2c3d4e5f6..."
+          },
+          "status": {
+            "type": "string",
+            "example": "active",
+            "description": "active | collection_bound | expired | cancelled"
+          },
+          "collection_id": {
+            "type": "object",
+            "example": null,
+            "nullable": true
+          },
+          "created_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "expires_at": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "session_id",
+          "integrator_id",
+          "market",
+          "amount",
+          "currency",
+          "reference",
+          "success_url",
+          "session_token",
+          "checkout_url",
+          "status",
+          "created_at",
+          "updated_at",
+          "expires_at"
+        ]
+      },
+      "CheckoutRailSummaryDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "mobile_money"
+          },
+          "name": {
+            "type": "string",
+            "example": "Mobile Money"
+          },
+          "customer_fields": {
+            "example": [
+              "phone_number"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "min_amount": {
+            "type": "number",
+            "example": 100
+          },
+          "max_amount": {
+            "type": "number",
+            "example": 5000000
+          }
+        },
+        "required": [
+          "code",
+          "name",
+          "customer_fields",
+          "min_amount",
+          "max_amount"
+        ]
+      },
+      "CheckoutSessionPublicResponseDto": {
+        "type": "object",
+        "properties": {
+          "session_id": {
+            "type": "string",
+            "example": "e3d4b5c6-..."
+          },
+          "market": {
+            "type": "string",
+            "example": "MW"
+          },
+          "market_name": {
+            "type": "object",
+            "example": "Malawi",
+            "nullable": true
+          },
+          "amount": {
+            "type": "number",
+            "example": 5000
+          },
+          "currency": {
+            "type": "string",
+            "example": "MWK"
+          },
+          "description": {
+            "type": "object",
+            "example": "Payment for Order #123",
+            "nullable": true
+          },
+          "merchant_name": {
+            "type": "object",
+            "example": "Acme Corp",
+            "nullable": true
+          },
+          "logo_url": {
+            "type": "object",
+            "example": "https://cdn.example.com/logo.png",
+            "nullable": true
+          },
+          "primary_color": {
+            "type": "object",
+            "example": "#FF5733",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "example": "active",
+            "description": "active | collection_bound | expired | cancelled"
+          },
+          "collection_id": {
+            "type": "object",
+            "nullable": true
+          },
+          "collection_status": {
+            "type": "object",
+            "nullable": true,
+            "description": "Current collection status if bound"
+          },
+          "expires_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "rails": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CheckoutRailSummaryDto"
+            }
+          }
+        },
+        "required": [
+          "session_id",
+          "market",
+          "amount",
+          "currency",
+          "status",
+          "expires_at",
+          "rails"
+        ]
+      },
+      "SubmitCheckoutSessionRequestDto": {
+        "type": "object",
+        "properties": {
+          "rail": {
+            "type": "string",
+            "example": "mobile_money",
+            "description": "Payment rail code"
+          },
+          "customer": {
+            "type": "object",
+            "example": {
+              "phone_number": "+265991234567"
+            },
+            "description": "Rail-specific customer fields; must satisfy the rail capability customer_fields"
+          }
+        },
+        "required": [
+          "rail",
+          "customer"
+        ]
+      },
+      "SubmitCheckoutSessionResponseDto": {
+        "type": "object",
+        "properties": {
+          "session_id": {
+            "type": "string",
+            "example": "e3d4b5c6-..."
+          },
+          "status": {
+            "type": "string",
+            "example": "collection_bound"
+          },
+          "collection_id": {
+            "type": "string",
+            "example": "a1b2c3d4-..."
+          },
+          "collection_status": {
+            "type": "string",
+            "example": "pending",
+            "description": "Current collection status (created | pending | processing | ...)"
+          }
+        },
+        "required": [
+          "session_id",
+          "status",
+          "collection_id",
+          "collection_status"
+        ]
+      },
+      "CreateRefundRequestDto": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "description": "Refund amount in minor units; must equal the original collection amount (v1 full refunds only)",
+            "example": 5000
+          }
+        },
+        "required": [
+          "amount"
+        ]
+      },
+      "RefundResponseDto": {
+        "type": "object",
+        "properties": {
+          "refund_id": {
+            "type": "string",
+            "example": "a1b2c3d4-..."
+          },
+          "collection_id": {
+            "type": "string",
+            "example": "e5f6g7h8-..."
+          },
+          "amount": {
+            "type": "number",
+            "example": 5000,
+            "description": "Amount in minor units"
+          },
+          "currency": {
+            "type": "string",
+            "example": "MWK"
+          },
+          "status": {
+            "type": "string",
+            "example": "requested",
+            "description": "Refund status: requested | pending | successful | failed"
+          },
+          "requested_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "resolved_at": {
+            "type": "object",
+            "nullable": true,
+            "description": "Set on successful or failed transition"
+          }
+        },
+        "required": [
+          "refund_id",
+          "collection_id",
+          "amount",
+          "currency",
+          "status",
+          "requested_at"
+        ]
+      },
+      "RegisterDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "user@example.com",
+            "description": "User email address"
+          },
+          "password": {
+            "type": "string",
+            "example": "securePassword123",
+            "description": "User password"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "user@example.com",
+            "description": "User email address"
+          },
+          "password": {
+            "type": "string",
+            "example": "securePassword123",
+            "description": "User password"
+          },
+          "expires_in_minutes": {
+            "type": "number",
+            "example": 10,
+            "description": "Second-factor challenge expiry time in minutes"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "EnableAuthenticatorDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "123456",
+            "description": "6-digit code from Google Authenticator"
+          }
+        },
+        "required": [
+          "code"
+        ]
+      },
+      "RefreshTokenDto": {
+        "type": "object",
+        "properties": {
+          "refresh_token": {
+            "type": "string",
+            "example": "refresh-token-uuid",
+            "description": "Refresh token"
+          }
+        },
+        "required": [
+          "refresh_token"
+        ]
+      },
+      "RequestOtpDto": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "example": "550e8400-e29b-41d4-a716-446655440000",
+            "description": "User ID to send the OTP to"
+          },
+          "scope": {
+            "type": "string",
+            "example": "LOGIN",
+            "description": "OTP scope (e.g. LOGIN, PASSWORD_RESET)"
+          },
+          "channel": {
+            "type": "string",
+            "example": "EMAIL",
+            "description": "Delivery channel",
+            "enum": [
+              "SMS",
+              "EMAIL"
+            ]
+          },
+          "expires_in_minutes": {
+            "type": "number",
+            "example": 10,
+            "description": "Expiry time in minutes"
+          }
+        },
+        "required": [
+          "user_id",
+          "scope",
+          "channel"
+        ]
+      },
+      "VerifyOtpDto": {
+        "type": "object",
+        "properties": {
+          "challenge_id": {
+            "type": "string",
+            "example": "550e8400-e29b-41d4-a716-446655440000",
+            "description": "OTP challenge ID returned from the request endpoint"
+          },
+          "code": {
+            "type": "string",
+            "example": "123456",
+            "description": "6-digit OTP code"
+          }
+        },
+        "required": [
+          "challenge_id",
+          "code"
         ]
       }
     }

@@ -1,0 +1,47 @@
+---
+title: Collections
+description: How EQX collects inbound payments from payers
+---
+
+A **collection** is an inbound payment initiated by a payer through a specific market and payment rail (e.g. M-Pesa in Kenya, bank transfer in Nigeria). Collections are the receive-side complement to the off-ramp — money flows in rather than out.
+
+## Markets and rails
+
+Before creating a collection you must discover which markets and rails are available to your integrator workspace:
+
+```
+1. GET  /v1/collections/markets              → list available markets
+2. GET  /v1/collections/:market/rails        → list rails for a market
+3. GET  /v1/collections/:market/rails/:rail  → get rail capability document
+```
+
+The **capability document** describes what fields are required to initiate a collection on that rail (e.g. phone number, account number, reference format constraints).
+
+## Lifecycle
+
+```
+PENDING → RECEIVED → COMPLETED
+        ↘ FAILED
+        ↘ EXPIRED
+```
+
+| Status | Meaning |
+|--------|---------|
+| `PENDING` | Collection created, awaiting payment from the payer |
+| `RECEIVED` | Payment received from the payer, being processed |
+| `COMPLETED` | Funds credited to your integrator balance |
+| `FAILED` | Payment failed or was rejected |
+| `EXPIRED` | Payer did not complete payment before the rail's expiry window |
+
+## Refunds
+
+A completed collection can be refunded via `POST /v1/collections/:id/refund`. Refunds are subject to rail availability and may take the same processing time as the original payment.
+
+## Webhooks
+
+Subscribe to collection events to receive real-time status updates without polling:
+
+| Event | Fired when |
+|-------|-----------|
+| `collection.completed` | Funds successfully credited |
+| `collection.failed` | Collection failed or expired |

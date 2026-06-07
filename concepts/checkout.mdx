@@ -1,0 +1,44 @@
+---
+title: Checkout
+description: Hosted payment pages for collecting funds from payers
+---
+
+**Hosted checkout** is EQX's no-UI integration path. Instead of building a custom payment form, you create a checkout session on your server and redirect the payer to an EQX-hosted page. EQX handles payment rail selection, input validation, and confirmation.
+
+## Flow overview
+
+```
+1. POST /v1/checkout/sessions          → create session, receive session_url
+2. Redirect payer to session_url
+3. Payer completes payment on EQX page
+4. EQX redirects payer to your redirect_url
+5. GET  /v1/checkout/sessions/:id      → confirm final status (or use webhooks)
+```
+
+## Session fields
+
+| Field | Description |
+|-------|-------------|
+| `amount` | Amount to collect from the payer |
+| `currency` | Fiat currency of the collection (e.g. `KES`, `NGN`) |
+| `redirect_url` | Where to send the payer after payment completes or fails |
+| `reference` | Your internal reference for the payment |
+| `expires_at` | When the session expires if unused |
+
+## Session statuses
+
+| Status | Meaning |
+|--------|---------|
+| `PENDING` | Created, awaiting payer action |
+| `SUBMITTED` | Payer has submitted payment details |
+| `COMPLETED` | Payment confirmed and funds credited |
+| `FAILED` | Payment failed or was cancelled |
+| `EXPIRED` | Session expired before payer completed payment |
+
+## Security
+
+The `by-token` endpoints used by the hosted page are public and require no API key — they are scoped to the session token embedded in the `session_url`. Your API key is never exposed to the payer's browser.
+
+## Webhooks
+
+Subscribe to `checkout.session.completed` and `checkout.session.failed` to receive real-time status updates without polling.

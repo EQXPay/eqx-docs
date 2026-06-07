@@ -1,0 +1,24 @@
+---
+title: Checkout
+description: Hosted checkout sessions for payer-facing payment collection
+---
+
+The Checkout API lets you create hosted payment sessions that redirect payers to an EQX-managed checkout page. This is the simplest integration path — no custom payment UI required.
+
+## Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/v1/checkout/sessions` | Create a hosted checkout session |
+| `GET` | `/v1/checkout/sessions/:id` | Get a checkout session by ID (integrator-scoped) |
+| `GET` | `/v1/checkout/sessions/by-token/:token` | Get public session data for the checkout page (no auth required) |
+| `POST` | `/v1/checkout/sessions/by-token/:token/submit` | Submit payment through the hosted checkout page |
+
+## Flow
+
+1. Your server calls `POST /v1/checkout/sessions` with the amount and currency — returns a `session_url`.
+2. Redirect the payer to `session_url`. EQX hosts the payment page.
+3. On completion EQX posts a webhook event and redirects the payer to your `redirect_url`.
+4. Poll `GET /v1/checkout/sessions/:id` or handle the webhook to confirm the final status.
+
+The `by-token` endpoints are used by the hosted page itself and do not require your API key.
