@@ -1,0 +1,33 @@
+---
+title: Collections
+description: Inbound payment collections and market/rail discovery
+---
+
+The Collections API handles inbound payments (fiat or crypto) collected from payers. Before initiating a collection, use the discovery endpoints to query available markets and payment rails.
+
+## Discovery
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/v1/collections/markets` | List markets available to your integrator |
+| `GET` | `/v1/collections/:market/rails` | List active rails for a market |
+| `GET` | `/v1/collections/:market/rails/:rail` | Get capability document for a specific rail |
+
+## Collections
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/v1/collections/:market/rails/:rail` | Create a new collection (initiate inbound payment) |
+| `GET` | `/v1/collections` | List collections for your integrator |
+| `GET` | `/v1/collections/:id` | Get a single collection by ID |
+| `POST` | `/v1/collections/:id/refund` | Refund a completed collection |
+
+## Collection statuses
+
+| Status | Meaning |
+|--------|---------|
+| `PENDING` | Awaiting payment from payer |
+| `RECEIVED` | Payment received, processing |
+| `COMPLETED` | Successfully credited |
+| `FAILED` | Payment failed or expired |
+| `REFUNDED` | Successfully refunded |

@@ -1,0 +1,35 @@
+---
+title: Deposits
+description: On-chain stablecoin deposits into EQX custody
+---
+
+A **deposit** is an on-chain transfer of a stablecoin (e.g. USDC, USDT) to a user's EQX custody address. EQX monitors the blockchain, detects incoming transfers, and credits the user's ledger balance once the required confirmations are reached.
+
+## Deposit addresses
+
+Each user can have one or more **deposit addresses** — blockchain addresses managed by EQX custody. Provision one via `POST /v1/api/deposit-addresses` and share it with the payer or your on-chain flow.
+
+Addresses are reusable. Any transfer to the address — from any sender — is detected and attributed to the owning user.
+
+## Lifecycle
+
+```
+DETECTED → CONFIRMED → PROCESSING → CREDITED
+                               ↘ FAILED
+```
+
+| Status | Meaning |
+|--------|---------|
+| `DETECTED` | Transfer seen on-chain, confirmation count below threshold |
+| `CONFIRMED` | Required block confirmations reached |
+| `PROCESSING` | Being applied to the user's ledger balance |
+| `CREDITED` | Ledger balance updated; funds available |
+| `FAILED` | Processing error — contact support |
+
+## Confirmation thresholds
+
+Confirmation requirements vary by chain and asset. EQX applies conservative defaults to minimise re-org risk. The `detected_at` and `confirmed_at` timestamps on the deposit record mark each transition.
+
+## Webhooks
+
+Subscribe to `deposit.credited` to be notified when a deposit has been credited to the user's balance and is available for settlement or off-ramp.

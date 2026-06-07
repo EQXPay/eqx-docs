@@ -1,0 +1,20 @@
+---
+title: Payouts
+description: Routes, quotes, and retail payout transactions
+---
+
+The Payouts API provides the full quote-and-commit flow for converting stablecoins into local fiat delivered to a beneficiary. This is the core integrator→beneficiary payout flow.
+
+See [Payouts concepts](/concepts/payouts) for the flow overview.
+
+For payout success expectations, provider dependency behavior, and final-state guidance, see [Reliability expectations](/concepts/payouts#reliability-expectations).
+
+## Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/v1/api/routes` | List available payout corridors |
+| `GET` | `/v1/api/transactions` | List payout transactions (paginated) |
+| `POST` | `/v1/api/quotes` | Create a locked quote |
+| `POST` | `/v1/api/transactions/commit` | Commit a quote into a live payout |
+| `GET` | `/v1/api/transactions/:id` | Get payout transaction detail |

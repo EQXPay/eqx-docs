@@ -78,11 +78,13 @@
     {
       "group": "Concepts",
       "pages": [
-        "concepts/settlements",
+        "concepts/payouts",
         "concepts/balances",
         "concepts/beneficiaries",
-        "concepts/off-ramp",
-        "concepts/autoconvert"
+        "concepts/autoconvert",
+        "concepts/collections",
+        "concepts/checkout",
+        "concepts/deposits"
       ]
     },
     {
@@ -96,45 +98,92 @@
       "pages": [
         "api-reference/overview",
         {
-          "group": "Offramp",
+          "group": "Payouts",
           "pages": [
-            "api-reference/offramp/overview"
+            "api-reference/payouts/overview",
+            "api-reference/payouts/get-routes",
+            "api-reference/payouts/list-transactions",
+            "api-reference/payouts/create-quote",
+            "api-reference/payouts/commit-transaction",
+            "api-reference/payouts/get-transaction-detail"
           ]
         },
         {
           "group": "Autoconvert",
           "pages": [
-            "api-reference/autoconvert/overview"
+            "api-reference/autoconvert/overview",
+            "api-reference/autoconvert/get-autoconvert-summary",
+            "api-reference/autoconvert/list-credits",
+            "api-reference/autoconvert/get-credit"
           ]
         },
         {
           "group": "Onramp",
           "pages": [
-            "api-reference/onramp/overview"
+            "api-reference/onramp/overview",
+            "api-reference/onramp/list-inbound-funding"
           ]
         },
         {
           "group": "Beneficiaries",
           "pages": [
-            "api-reference/beneficiaries/overview"
+            "api-reference/beneficiaries/overview",
+            "api-reference/beneficiaries/create-beneficiary",
+            "api-reference/beneficiaries/list-beneficiaries",
+            "api-reference/beneficiaries/get-beneficiary",
+            "api-reference/beneficiaries/update-beneficiary",
+            "api-reference/beneficiaries/deactivate-beneficiary"
           ]
         },
         {
           "group": "Markets",
           "pages": [
-            "api-reference/markets/overview"
+            "api-reference/markets/overview",
+            "api-reference/markets/list-supported-retail-routes",
+            "api-reference/markets/list-active-sources",
+            "api-reference/markets/list-rates",
+            "api-reference/markets/resolve-retail-rate"
           ]
         },
         {
-          "group": "Partners",
+          "group": "Collections",
           "pages": [
-            "api-reference/partners/overview"
+            "api-reference/collections/overview",
+            "api-reference/collections/list-markets",
+            "api-reference/collections/list-rails",
+            "api-reference/collections/get-rail-capability",
+            "api-reference/collections/create-collection",
+            "api-reference/collections/list-collections",
+            "api-reference/collections/get-collection",
+            "api-reference/collections/refund-collection"
           ]
         },
         {
-          "group": "Partners Funding",
+          "group": "Checkout",
           "pages": [
-            "api-reference/partners-funding/overview"
+            "api-reference/checkout/overview",
+            "api-reference/checkout/create-session",
+            "api-reference/checkout/get-session-by-token",
+            "api-reference/checkout/submit-session",
+            "api-reference/checkout/get-session-by-id"
+          ]
+        },
+        {
+          "group": "Deposits",
+          "pages": [
+            "api-reference/deposits/overview",
+            "api-reference/deposits/provision-address",
+            "api-reference/deposits/list-deposit-addresses",
+            "api-reference/deposits/list-deposits"
+          ]
+        },
+        {
+          "group": "Risk",
+          "pages": [
+            "api-reference/risk/overview",
+            "api-reference/risk/list-open-signals",
+            "api-reference/risk/get-signal",
+            "api-reference/risk/create-signal"
           ]
         }
       ]
@@ -176,12 +225,22 @@
     "enabled": true
   },
   "versions": [
-    { "name": "v2.5", "default": true }
+    {
+      "name": "v2.5",
+      "default": true
+    }
   ],
   "locales": [
-    { "name": "en", "default": true },
-    { "name": "fr" },
-    { "name": "sw" }
+    {
+      "name": "en",
+      "default": true
+    },
+    {
+      "name": "fr"
+    },
+    {
+      "name": "sw"
+    }
   ],
   "modeToggle": {
     "default": "light",

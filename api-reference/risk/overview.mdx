@@ -1,0 +1,22 @@
+---
+title: Risk
+description: Risk signals for compliance and fraud monitoring
+---
+
+The Risk API allows integrators to submit risk signals and review open risk items associated with their account.
+
+## Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/v1/api/risk/signals` | Create a risk signal |
+| `GET` | `/v1/api/risk/signals/open` | List open risk signals for the authenticated actor |
+| `GET` | `/v1/api/risk/signals/:id` | Get a risk signal by ID |
+
+## Signal dispositions
+
+| Disposition | Meaning |
+|-------------|---------|
+| `OPEN` | Signal is active and under review |
+| `CLEARED` | Signal reviewed and cleared |
+| `ESCALATED` | Signal escalated for further action |

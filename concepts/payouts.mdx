@@ -1,17 +1,17 @@
 ---
-title: Off-Ramp
-description: The quote-and-commit flow for stablecoin-to-fiat payouts
+title: Payouts
+description: The quote-and-commit flow for stablecoin-to-fiat payouts to beneficiaries
 ---
 
-The **retail off-ramp** is EQX's primary payout flow. It converts a stablecoin amount into local fiat delivered to a beneficiary's mobile money wallet or bank account.
+A **payout** is EQX's primary integrator→beneficiary flow. It converts a stablecoin amount into local fiat delivered to a beneficiary's mobile money wallet or bank account.
 
 ## Flow overview
 
 ```
-1. GET  /api/routes           → choose corridor
-2. POST /api/quotes           → lock rate (90s TTL)
-3. POST /api/transactions/commit → execute payout
-4. GET  /api/transactions/:id → poll status (or use webhooks)
+1. GET  /v1/api/routes                   → choose corridor
+2. POST /v1/api/quotes                   → lock rate (90s TTL)
+3. POST /v1/api/transactions/commit      → execute payout
+4. GET  /v1/api/transactions/:id         → poll status (or use webhooks)
 ```
 
 ## Quotes
@@ -28,7 +28,7 @@ Key quote fields:
 | `rate` | Locked exchange rate |
 | `expires_at` | Quote expiry timestamp (ISO 8601) |
 
-## Transactions
+## Payout transactions
 
 Committing a quote creates a **payout transaction**. The transaction moves through these statuses:
 
@@ -42,7 +42,7 @@ PROCESSING → DISPATCHED → COMPLETED
 |--------|---------|
 | `PROCESSING` | Committed, awaiting dispatch to provider |
 | `DISPATCHED` | Submitted to payout provider |
-| `COMPLETED` | Provider confirmed delivery |
+| `COMPLETED` | Provider confirmed delivery to beneficiary |
 | `FAILED` | Terminal failure |
 | `RECONCILIATION_REQUIRED` | Provider response is ambiguous; manual review needed |
 
@@ -56,4 +56,4 @@ Always use the transaction status endpoint and webhooks as the source of truth f
 
 ## Pagination
 
-`GET /api/transactions` supports offset pagination via `page` and `per_page` query parameters. Default page size is 20; maximum is 100.
+`GET /v1/api/transactions` supports offset pagination via `page` and `per_page` query parameters. Default page size is 20; maximum is 100.
