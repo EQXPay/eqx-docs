@@ -2,8 +2,8 @@
   "$schema": "https://mintlify.com/schema.json",
   "name": "EQX",
   "logo": {
-    "dark": "/images/logo/logo-dark.svg",
-    "light": "/images/logo/logo-light.svg"
+    "dark": "/images/logo/logo-mark.svg",
+    "light": "/images/logo/logo-mark.svg"
   },
   "favicon": "/images/favicon.svg",
   "colors": {
