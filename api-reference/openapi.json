@@ -1603,7 +1603,7 @@
     }
   },
   "info": {
-    "title": "EQX Settlement API",
+    "title": "EQXPay API",
     "description": "EQX v2.5 staging API for admin, liquidity-provider, and integrator operations.",
     "version": "2.5.0",
     "contact": {}
