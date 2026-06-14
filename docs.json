@@ -216,8 +216,8 @@
     ]
   },
   "logo": {
-    "light": "/images/logo/logo-light.svg",
-    "dark": "/images/logo/logo-dark.svg"
+    "light": "/images/logo/logo-mark.svg",
+    "dark": "/images/logo/logo-mark.svg"
   },
   "api": {
     "openapi": "api-reference/openapi.json",
