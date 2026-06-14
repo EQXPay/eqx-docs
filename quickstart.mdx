@@ -5,7 +5,7 @@ description: Make your first EQX API call in under 5 minutes
 
 ## Prerequisites
 
-- An EQX integrator account ([sign up](https://app.eqx.com/register))
+- An EQX integrator account ([sign up](https://omni.eqxpay.io/register))
 - A Bearer token from the EQX dashboard → **Settings → API Keys**
 
 ---
@@ -15,7 +15,7 @@ description: Make your first EQX API call in under 5 minutes
 Fetch the corridors available to your workspace. This tells you which source assets, destination countries, and payout methods are enabled.
 
 ```bash
-curl https://api.eqx.com/api/routes \
+curl https://sandbox.api.eqxpay.io/api/routes \
   -H "Authorization: Bearer <your_token>"
 ```
 
@@ -43,7 +43,7 @@ curl https://api.eqx.com/api/routes \
 Lock in an exchange rate for a specific amount and corridor. Quotes are valid for 90 seconds.
 
 ```bash
-curl -X POST https://api.eqx.com/api/quotes \
+curl -X POST https://sandbox.api.eqxpay.io/api/quotes \
   -H "Authorization: Bearer <your_token>" \
   -H "Content-Type: application/json" \
   -d '{
@@ -79,7 +79,7 @@ curl -X POST https://api.eqx.com/api/quotes \
 Convert the accepted quote into a live payout. Include an `Idempotency-Key` header to prevent duplicate submissions.
 
 ```bash
-curl -X POST https://api.eqx.com/api/transactions/commit \
+curl -X POST https://sandbox.api.eqxpay.io/api/transactions/commit \
   -H "Authorization: Bearer <your_token>" \
   -H "Content-Type: application/json" \
   -H "Idempotency-Key: <unique_key>" \

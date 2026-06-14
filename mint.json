@@ -23,7 +23,7 @@
   ],
   "topbarCtaButton": {
     "name": "Dashboard",
-    "url": "https://app.eqx.com"
+    "url": "https://omni.eqxpay.io"
   },
   "tabs": [
     {
@@ -213,7 +213,7 @@
   ],
   "openapi": "api-reference/openapi.json",
   "api": {
-    "baseUrl": "https://api.eqx.com",
+    "baseUrl": "https://sandbox.api.eqxpay.io",
     "auth": {
       "method": "bearer"
     }

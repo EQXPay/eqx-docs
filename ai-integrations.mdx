@@ -11,7 +11,7 @@ The EQX MCP (Model Context Protocol) server lets AI agents like Claude and Curso
 
 **Endpoint:**
 ```
-https://docs.eqx.com/mcp
+https://docs.eqxpay.io/mcp
 ```
 
 **Connect in Claude Desktop** (`claude_desktop_config.json`):
@@ -19,7 +19,7 @@ https://docs.eqx.com/mcp
 {
   "mcpServers": {
     "eqx": {
-      "url": "https://docs.eqx.com/mcp",
+      "url": "https://docs.eqxpay.io/mcp",
       "headers": {
         "Authorization": "Bearer <your_token>"
       }
@@ -42,13 +42,13 @@ The MCP server maps this to `POST /api/quotes` followed by `POST /api/transactio
 The EQX `llms.txt` file provides a machine-readable index of the integrator API surface — optimised for LLM context windows.
 
 ```
-https://docs.eqx.com/llms.txt
+https://docs.eqxpay.io/llms.txt
 ```
 
 Use it to prime an LLM with EQX API knowledge before asking it to generate integration code:
 
 ```bash
-curl https://docs.eqx.com/llms.txt | pbcopy
+curl https://docs.eqxpay.io/llms.txt | pbcopy
 # Paste into your AI tool's context
 ```
 
