@@ -222,7 +222,7 @@
   "api": {
     "openapi": "api-reference/openapi.json",
     "mdx": {
-      "server": "https://api.eqx.com",
+      "server": "https://sandbox.api.eqxpay.io",
       "auth": {
         "method": "bearer"
       }
@@ -242,7 +242,7 @@
     "primary": {
       "type": "button",
       "label": "Dashboard",
-      "href": "https://app.eqx.com"
+      "href": "https://omni.eqxpay.io"
     }
   },
   "footer": {
